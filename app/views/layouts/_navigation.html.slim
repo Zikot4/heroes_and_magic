@@ -4,8 +4,8 @@ nav class="navbar navbar-default"
       div class="navbar-brand"
         = link_to "root_path :)", root_path
       ul class="nav navbar-nav navbar-right"
-        /li
-        /  =link_to "Admin Menu", rails_admin_path
+        li
+          =link_to "Admin Menu", rails_admin_path
         -unless user_signed_in?
           li
             = link_to "Sign up", new_user_registration_path

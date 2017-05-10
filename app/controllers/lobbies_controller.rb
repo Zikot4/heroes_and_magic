@@ -28,7 +28,7 @@ class LobbiesController < ApplicationController
 
     respond_to do |format|
       if @lobby.save
-        format.html { redirect_to @lobby, notice: 'Lobby was successfully created.' }
+        format.html { redirect_to lobby_path(@lobby.url), notice: 'Lobby was successfully created.' }
         format.json { render :show, status: :created, location: @lobby }
       else
         format.html { render :new }
@@ -42,7 +42,7 @@ class LobbiesController < ApplicationController
   def update
     respond_to do |format|
       if @lobby.update(lobby_params)
-        format.html { redirect_to @lobby, notice: 'Lobby was successfully updated.' }
+        format.html { redirect_to lobby_path(@lobby.url), notice: 'Lobby was successfully updated.' }
         format.json { render :show, status: :ok, location: @lobby }
       else
         format.html { render :edit }
@@ -64,11 +64,11 @@ class LobbiesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_lobby
-      @lobby = Lobby.find(params[:id])
+      @lobby = Lobby.find_by(url: params[:url])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def lobby_params
-      params.require(:lobby).permit(:url, :count_of_users)
+      params.require(:lobby).permit(:url, :count_of_users)#TODO change this
     end
 end

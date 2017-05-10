@@ -1,8 +1,7 @@
 h1 Editing lobby
 
-== render 'form'
+== render 'form_edit'
 
-= link_to 'Show', @lobby
+= link_to 'Show', lobby_path(@lobby.url)
 '|
 = link_to 'Back', lobbies_path
-
