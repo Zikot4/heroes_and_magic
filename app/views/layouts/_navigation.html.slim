@@ -1,0 +1,18 @@
+nav class="navbar navbar-default"
+  div class="container container-fluid"
+    div class="navbar-header"
+      div class="navbar-brand"
+        = link_to "root_path :)", root_path
+      ul class="nav navbar-nav navbar-right"
+        /li
+        /  =link_to "Admin Menu", rails_admin_path
+        -unless user_signed_in?
+          li
+            = link_to "Sign up", new_user_registration_path
+          li
+            = link_to "Log in", user_session_path
+        -else
+          li 
+            =link_to current_user.email, edit_user_registration_path
+          li
+            = link_to "Log out", destroy_user_session_path, method: :delete

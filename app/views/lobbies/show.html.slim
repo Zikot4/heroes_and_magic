@@ -1,0 +1,12 @@
+p#notice = notice
+
+p
+  strong Url:
+  = @lobby.url
+p
+  strong Count of users:
+  = @lobby.count_of_users
+
+= link_to 'Edit', edit_lobby_path(@lobby)
+'|
+= link_to 'Back', lobbies_path

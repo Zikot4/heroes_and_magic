@@ -1,0 +1,15 @@
+= form_for @lobby do |f|
+  - if @lobby.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@lobby.errors.count, "error")} prohibited this lobby from being saved:"
+      ul
+        - @lobby.errors.full_messages.each do |message|
+          li = message
+
+  .field
+    = f.label :url
+    = f.text_field :url
+  .field
+    = f.label :count_of_users
+    = f.number_field :count_of_users
+  .actions = f.submit

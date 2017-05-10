@@ -1,0 +1,23 @@
+h1 Listing lobbies
+
+table
+  thead
+    tr
+      th Url
+      th Count of users
+      th
+      th
+      th
+
+  tbody
+    - @lobbies.each do |lobby|
+      tr
+        td = lobby.url
+        td = lobby.count_of_users
+        td = link_to 'Show', lobby
+        td = link_to 'Edit', edit_lobby_path(lobby)
+        td = link_to 'Destroy', lobby, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Lobby', new_lobby_path
