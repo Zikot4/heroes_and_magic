@@ -1,5 +1,5 @@
 class LobbiesController < ApplicationController
-  before_action :set_lobby, only: [:show, :edit, :update, :destroy]
+  before_action :set_lobby, only: [:show, :edit, :update, :destroy, :join, :ready]
 
   # GET /lobbies
   # GET /lobbies.json
@@ -10,6 +10,9 @@ class LobbiesController < ApplicationController
   # GET /lobbies/1
   # GET /lobbies/1.json
   def show
+    lobby_accounts = @lobby.accounts
+    @users = User.includes(:accounts).where(:accounts => {id: lobby_accounts}).all
+    @users_ready = Account.where(id: lobby_accounts).all
   end
 
   # GET /lobbies/new
@@ -54,11 +57,37 @@ class LobbiesController < ApplicationController
   # DELETE /lobbies/1
   # DELETE /lobbies/1.json
   def destroy
+    lobby_accounts = @lobby.accounts.all
+    users=Account.where(id: lobby_accounts).all
+    users.destroy_all
     @lobby.destroy
     respond_to do |format|
       format.html { redirect_to lobbies_url, notice: 'Lobby was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def join#TODO
+    lobby_accounts = @lobby.accounts
+    unless Account.where(id: lobby_accounts,user_id: current_user).exists?
+      @account = current_user.accounts.new
+      @lobby.accounts << @account
+    end
+    redirect_to lobby_path(@lobby.url)
+  end
+
+  def ready
+    lobby_accounts = @lobby.accounts
+    @account = Account.where(id: lobby_accounts,user_id: current_user).first
+    if @account.user_ready == false
+      @account.user_ready = true
+      @account.save
+    end
+    redirect_to lobby_path(@lobby.url)
+  end
+
+  def start
+
   end
 
   private

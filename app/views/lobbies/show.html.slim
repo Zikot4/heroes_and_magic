@@ -3,10 +3,27 @@ p#notice = notice
 p
   strong Url:
   = @lobby.url
+hr
 p
   strong Count of users:
   = @lobby.count_of_users
+hr
+p  
+  - @users.each do |user|
+    p 
+      = "User: "
+      = user.email
+p
+  -@users_ready.each do |user|
+    p 
+      =user.user_ready
 
+hr
+=link_to "Join", join_lobby_path(@lobby.url)  
+hr
+=link_to "Ready", ready_lobby_path(@lobby.url)  
+hr
+br  
 = link_to 'Edit', edit_lobby_path(@lobby.url)
 '|
 = link_to 'Back', lobbies_path
