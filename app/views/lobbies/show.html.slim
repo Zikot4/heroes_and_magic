@@ -19,9 +19,11 @@ p
       =user.user_ready
 
 hr
-=link_to "Join", join_lobby_path(@lobby.url)  
+=link_to "Join", join_lobby_path(@lobby.url), data: { method: :post}
 hr
-=link_to "Ready", ready_lobby_path(@lobby.url)  
+=link_to "Ready", ready_lobby_path(@lobby.url), data: { method: :put } 
+hr
+= render partial: "lobbies/form_test", locals: {lobby: @lobby}
 hr
 br  
 = link_to 'Edit', edit_lobby_path(@lobby.url)

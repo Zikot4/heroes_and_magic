@@ -67,15 +67,19 @@ class LobbiesController < ApplicationController
     end
   end
 
+  #GET /lobbies/:url/ready
   def join#TODO
-    lobby_accounts = @lobby.accounts
-    unless Account.where(id: lobby_accounts,user_id: current_user).exists?
-      @account = current_user.accounts.new
-      @lobby.accounts << @account
+    if @lobby.accounts.size < @lobby.count_of_users
+      lobby_accounts = @lobby.accounts
+      unless Account.where(id: lobby_accounts,user_id: current_user).exists?
+        @account = current_user.accounts.new
+        @lobby.accounts << @account
+      end
     end
     redirect_to lobby_path(@lobby.url)
   end
 
+  #PUT /lobbies/:url/ready
   def ready
     lobby_accounts = @lobby.accounts
     @account = Account.where(id: lobby_accounts,user_id: current_user).first

@@ -1,0 +1,6 @@
+= form_for [lobby , Unit.new],url: new_lobby_unit_path(lobby.url), method: "get" do |f|
+
+  .field
+    = f.select :variety, Unit::CLASSES
+
+    .actions = f.submit

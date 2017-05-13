@@ -1,4 +1,5 @@
 class Account < ApplicationRecord
   has_and_belongs_to_many :lobbies
   belongs_to :user
+  has_many :units, dependent: :destroy
 end
