@@ -1,0 +1,21 @@
+h3 hello 
+br
+=current_user.email
+- @my_units.each do |unit|
+  p
+    = "account "
+    = unit.account_id 
+    = " | "
+    = unit.id
+    = " "
+    = unit.variety
+hr
+- @units.each do |unit|
+  p
+    = "account "
+    = unit.account_id 
+    = " | "
+    = unit.id
+    = " "
+    = unit.variety 
+= @units.size

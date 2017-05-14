@@ -25,6 +25,8 @@ hr
 hr
 = render partial: "lobbies/form_test", locals: {lobby: @lobby}
 hr
+= link_to "Start", start_lobby_path(@lobby.url),data: {method: :put}
+hr
 br  
 = link_to 'Edit', edit_lobby_path(@lobby.url)
 '|

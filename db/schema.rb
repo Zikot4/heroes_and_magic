@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170512061328) do
+ActiveRecord::Schema.define(version: 20170513122124) do
 
   create_table "accounts", force: :cascade do |t|
     t.integer  "user_id"
@@ -27,8 +27,11 @@ ActiveRecord::Schema.define(version: 20170512061328) do
   create_table "lobbies", force: :cascade do |t|
     t.string   "url"
     t.integer  "count_of_users"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.integer  "user_id"
+    t.integer  "game_mode",         default: 3
+    t.boolean  "everyone_is_ready", default: false
   end
 
   create_table "units", force: :cascade do |t|

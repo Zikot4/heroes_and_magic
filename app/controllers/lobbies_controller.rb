@@ -1,5 +1,5 @@
 class LobbiesController < ApplicationController
-  before_action :set_lobby, only: [:show, :edit, :update, :destroy, :join, :ready]
+  before_action :set_lobby, only: [:show, :edit, :update, :destroy, :join, :ready, :start]
 
   # GET /lobbies
   # GET /lobbies.json
@@ -10,9 +10,13 @@ class LobbiesController < ApplicationController
   # GET /lobbies/1
   # GET /lobbies/1.json
   def show
-    lobby_accounts = @lobby.accounts
-    @users = User.includes(:accounts).where(:accounts => {id: lobby_accounts}).all
-    @users_ready = Account.where(id: lobby_accounts).all
+    if @lobby.everyone_is_ready
+      redirect_to lobby_units_path(@lobby.url)
+    else
+      lobby_accounts = @lobby.accounts
+      @users = User.includes(:accounts).where(:accounts => {id: lobby_accounts}).all
+      @users_ready = Account.where(id: lobby_accounts).all
+    end
   end
 
   # GET /lobbies/new
@@ -27,7 +31,7 @@ class LobbiesController < ApplicationController
   # POST /lobbies
   # POST /lobbies.json
   def create
-    @lobby = Lobby.new(lobby_params)
+    @lobby = current_user.lobbies.new(lobby_params)
 
     respond_to do |format|
       if @lobby.save
@@ -90,8 +94,20 @@ class LobbiesController < ApplicationController
     redirect_to lobby_path(@lobby.url)
   end
 
+  #PUT /lobbies/:url/start
   def start
-
+    if @lobby.accounts.size == @lobby.count_of_users
+      lobby_accounts = @lobby.accounts
+      accounts = Account.where(id: lobby_accounts)
+      accounts.each do |account|
+        return redirect_to lobby_path(@lobby.url) if account.user_ready == false
+      end
+      @lobby.everyone_is_ready = true
+      @lobby.save
+      redirect_to lobby_units_path(@lobby.url)
+    else
+      redirect_to lobby_path(@lobby.url)
+    end
   end
 
   private

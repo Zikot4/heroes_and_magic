@@ -17,7 +17,7 @@ table
         td = link_to 'Show', lobby_path(lobby.url)
         td = link_to 'Edit', edit_lobby_path(lobby.url)
         td = link_to 'Destroy', lobby_path(lobby.url), data: { confirm: 'Are you sure?' }, method: :delete
-
+        
 br
 
 = link_to 'New Lobby', new_lobby_path

@@ -4,7 +4,7 @@ Rails.application.routes.draw do
     resources :units
     post :join, on: :member
     put :ready, on: :member
-    get :start, on: :member
+    put :start, on: :member
   end
 
   devise_for :users

@@ -1,17 +1,19 @@
 class UnitsController < ApplicationController
-  before_action :set_lobby, only: [:new]
+  before_action :set_lobby, only: [:new, :find_current_account,:index]
   before_action :set_account, only: [:new]
+  before_action :find_current_account, only: [:index]
+
   def show
   end
 
   def index
+    @my_units = Unit.where(account_id: @current_account)
+    @units = Unit.where(account_id: @lobby_accounts).where.not(account_id:  @current_account)
   end
 
   def new
-    @unit = Unit.create(unit_params)
-    @unit.account_id = @account.id
-    @unit.save
-    redirect_to lobby_path(@lobby.url) 
+    @account.units.create(unit_params)
+    redirect_to lobby_path(@lobby.url)
   end
 
   def create
@@ -24,11 +26,12 @@ private
   end
 
   def set_account
-    @account = Account.find_by(user_id: current_user)
+    @account = Account.find_by(id: @lobby.accounts,user_id: current_user)
   end
 
-  def set_unit
-    @unit = @lobby.accounts.find_by(account_id: params[:id])
+  def find_current_account
+    @lobby_accounts = @lobby.accounts
+    @current_account = Account.where(id: @lobby_accounts, user_id: current_user)
   end
 
   def unit_params
