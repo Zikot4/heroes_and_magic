@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resources :lobbies, param: :url do
     resources :units do
       put :challenge, on: :member, controller: 'units'
+      put :heal, on: :member, controller: 'units'
     end
     get :action, controller: 'units'
     put :defence, controller: 'units'

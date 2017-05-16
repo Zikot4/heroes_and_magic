@@ -18,6 +18,10 @@ module UnitsActionsCase
     raise NotImplementedError
   end
 
+  def heal
+    raise NotImplementedError
+  end
+  
   def success?
       errors.none?
   end

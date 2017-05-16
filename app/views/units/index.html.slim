@@ -1,5 +1,5 @@
 -unless @units_under_attack.exists?
-  -if (@current_account.current_step)
+  -if @current_account.current_step
     font color="green"
       = "YOUR TURN"
     = "Current User: "
@@ -13,28 +13,45 @@
         = @current_unit.id 
         = " "
         = @current_unit.variety
-        = " "
+        = " hp: "
         = @current_unit.hp
+  -else
+    h3
+      = "Wait for your turn"
+-else
+  h3
+    = "Wait for your turn"
 hr
 - @my_units.each do |unit|
   p
-    = "account "
-    = unit.account_id 
-    = " | "
-    = unit.id
-    = " "
-    = unit.variety
-    = " "
-    = unit.hp
+    =link_to heal_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}
+      = "account "
+      = unit.account_id 
+      = " | "
+      = unit.id
+      = " "
+      = unit.variety
+      = " hp: "
+      = unit.hp
 hr
 - @units.each do |unit|
   p
-    =link_to challenge_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}
+    -if can? :step, @lobby
+      =link_to challenge_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}
+        = "account "
+        = unit.account_id 
+        = " | "
+        = unit.id
+        = " "
+        = unit.variety 
+        = " "
+        = unit.hp
+    -else
       = "account "
       = unit.account_id 
       = " | "
       = unit.id
       = " "
       = unit.variety 
-      = " "
+      = " hp: "
       = unit.hp

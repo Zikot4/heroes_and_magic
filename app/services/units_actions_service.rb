@@ -6,6 +6,15 @@ class UnitsActionsService
     @unit = unit
   end
 
+  def heal
+    r = Random.new
+    current_unit = Unit.current_units(current_account,lobby.lap).first
+    current_unit.lap += 1
+    unit.hp += Object.const_get(current_unit.variety)::ACTION[:heal] + r.rand(0..5)
+    unit.save
+    current_unit.save
+  end
+
   def challenge
     current_unit = Unit.current_units(current_account,lobby.lap).first
     current_unit.lap += 1

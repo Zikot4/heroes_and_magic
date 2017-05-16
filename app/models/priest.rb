@@ -1,5 +1,6 @@
 class Priest < Unit
   HP = 50
+  CAN_HEAL = true
   ACTION = {
     :heal => 9,
     :damage => 9,

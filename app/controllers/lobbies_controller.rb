@@ -58,12 +58,14 @@ class LobbiesController < ApplicationController
 
   #PUT /lobbies/:url/ready
   def ready
+    authorize! :join, @lobby
     @service.ready
     redirect_to lobby_path(@lobby.url)
   end
 
   #PUT /lobbies/:url/start
   def start
+    authorize! :join, @lobby
     if @service.start
       redirect_to lobby_units_path(@lobby.url)
     else

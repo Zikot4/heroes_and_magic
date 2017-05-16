@@ -1,11 +1,12 @@
 class UnitsController < ApplicationController
-  before_action :set_lobby, only: [:new, :index, :challenge, :set_account,:action,:attack,:defence]
-  before_action :find_current_account, only: [:index,:challenge,:action]
-  before_action :set_service, only: [:action,:attack,:defence]
+  before_action :set_lobby, only: [:new, :index, :challenge, :set_account,:action,:attack,:defence,:heal]
+  before_action :find_current_account, only: [:index,:challenge,:action,:heal]
+  before_action :set_service, only: [:action,:attack,:defence,:heal]
   before_action :set_account, only: [:new]
-  before_action :set_unit, only: [:challenge]
+  before_action :set_unit, only: [:challenge,:heal]
 
   def challenge
+    authorize! :step, @lobby
     service = UnitsActionsService.new(@current_account,@lobby , @unit)
     service.challenge
     redirect_to lobby_units_path(@lobby.url)
@@ -14,8 +15,8 @@ class UnitsController < ApplicationController
   def index
     redirect_to lobby_action_path(@lobby.url) if Unit.where(account_id: @current_account.id).where.not(under_attack: nil).exists?
     @units_under_attack = Unit.units_under_attack(@lobby_accounts).all
-    service = UnitsShowService.new(@lobby,@current_account,@lobby_accounts)
-    service.index
+    serv = UnitsShowService.new(@lobby,@current_account,@lobby_accounts)
+    serv.index
     @current_unit = Unit.current_units(@current_account, @lobby.lap).first
     @my_units = Unit.my_units(@current_account)
     @units = Unit.other_units(@lobby_accounts, @current_account)
@@ -30,6 +31,14 @@ class UnitsController < ApplicationController
   def action
     redirect_to lobby_path(@lobby.url) unless Unit.current_account_under_attack(@current_account.id).exists?
     @protection, @attack = @service.action
+  end
+
+  def heal
+    authorize! :step, @lobby
+    authorize! :heal, @lobby
+    serv = UnitsActionsService.new(@current_account,@lobby , @unit)
+    serv.heal
+    redirect_to lobby_units_path(@lobby.url)
   end
 
   def attack
