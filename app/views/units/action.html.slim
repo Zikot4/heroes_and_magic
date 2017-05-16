@@ -1,0 +1,22 @@
+
+h3 
+  = "YOUR Unit "
+  = @protection.id
+  = " "
+  = @protection.variety
+  = " "
+  = @protection.hp
+  = " IS UNDER ATTACK!"
+  
+p 
+  = "ATTACK BY Unit "
+  = @attack.id
+  = " "
+  = @attack.variety
+  = " " 
+  = @attack.hp
+
+
+=link_to "Attack Him!",lobby_attack_path(@lobby.url),data: {method: :put}
+br
+=link_to "Keep The Defense",lobby_defence_path(@lobby.url),data: {method: :put}

@@ -1,6 +1,21 @@
-h3 hello 
-br
-=current_user.email
+-unless @units_under_attack.exists?
+  -if (@current_account.current_step)
+    font color="green"
+      = "YOUR TURN"
+    = "Current User: "
+    u
+      = current_user.email
+    hr
+      
+    h4 Unit ready to fight!
+    u
+      font color="green"
+        = @current_unit.id 
+        = " "
+        = @current_unit.variety
+        = " "
+        = @current_unit.hp
+hr
 - @my_units.each do |unit|
   p
     = "account "
@@ -9,13 +24,17 @@ br
     = unit.id
     = " "
     = unit.variety
+    = " "
+    = unit.hp
 hr
 - @units.each do |unit|
   p
-    = "account "
-    = unit.account_id 
-    = " | "
-    = unit.id
-    = " "
-    = unit.variety 
-= @units.size
+    =link_to challenge_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}
+      = "account "
+      = unit.account_id 
+      = " | "
+      = unit.id
+      = " "
+      = unit.variety 
+      = " "
+      = unit.hp

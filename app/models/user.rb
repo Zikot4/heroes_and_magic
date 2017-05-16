@@ -5,4 +5,6 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable
   has_many :accounts
   has_many :lobbies, dependent: :destroy
+
+  scope :users, lambda {|lobby_accounts| includes(:accounts).where(accounts: {id: lobby_accounts})}
 end

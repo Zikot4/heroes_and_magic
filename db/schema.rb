@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170513122124) do
+ActiveRecord::Schema.define(version: 20170514103754) do
 
   create_table "accounts", force: :cascade do |t|
     t.integer  "user_id"
-    t.boolean  "user_ready", default: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.boolean  "user_ready",   default: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.boolean  "current_step", default: false
   end
 
   create_table "accounts_lobbies", id: false, force: :cascade do |t|
@@ -32,14 +33,17 @@ ActiveRecord::Schema.define(version: 20170513122124) do
     t.integer  "user_id"
     t.integer  "game_mode",         default: 3
     t.boolean  "everyone_is_ready", default: false
+    t.integer  "lap",               default: 0
   end
 
   create_table "units", force: :cascade do |t|
     t.integer  "account_id"
     t.string   "variety"
     t.integer  "hp"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.integer  "under_attack"
+    t.integer  "lap",          default: 0
   end
 
   create_table "users", force: :cascade do |t|

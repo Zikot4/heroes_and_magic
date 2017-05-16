@@ -1,25 +1,11 @@
 class Unit < ApplicationRecord
   belongs_to :account
   CLASSES = {
-    :mage => "mage",
-    :priest => "priest",
-    :warrior => "warrior"
+    :mage => "Mage",
+    :priest => "Priest",
+    :warrior => "Warrior"
   }
-=begin
-  MAGE = {
-    :type => "priest",
-    :damage => 8,
-    :defence => 0.25
-  }
-  WARRIOR = {
-    :type => "priest",
-    :damage => 8,
-    :defence => 0.25
-  }
-  PRIEST = {
-    :type => "priest",
-    :damage => 8,
-    :defence => 0.25
-  }
-=end
+
+  scope :attacking_unit, lambda {|unit_under_attack| where(id: unit_under_attack)}
+  scope :defending_unit, lambda {|current_account_id| where(account_id: current_account_id).where.not(under_attack: nil)}
 end
