@@ -13,12 +13,12 @@ class UnitsController < ApplicationController
 
   def index
     redirect_to lobby_action_path(@lobby.url) if Unit.where(account_id: @current_account.id).where.not(under_attack: nil).exists?
-    @units_under_attack = Unit.all.where(account_id: @lobby_accounts).where.not(under_attack: nil)
+    @units_under_attack = Unit.units_under_attack(@lobby_accounts).all
     service = UnitsShowService.new(@lobby,@current_account,@lobby_accounts)
     service.index
-    @current_unit = Unit.where(account_id: @current_account, lap: @lobby.lap).first
-    @my_units = Unit.where(account_id: @current_account)
-    @units = Unit.where(account_id: @lobby_accounts).where.not(account_id:  @current_account)
+    @current_unit = Unit.current_units(@current_account, @lobby.lap).first
+    @my_units = Unit.my_units(@current_account)
+    @units = Unit.other_units(@lobby_accounts, @current_account)
   end
 
   def new
@@ -28,7 +28,7 @@ class UnitsController < ApplicationController
   end
 
   def action
-    redirect_to lobby_path(@lobby.url) unless Unit.where(account_id: @current_account.id).where.not(under_attack: nil).exists?
+    redirect_to lobby_path(@lobby.url) unless Unit.current_account_under_attack(@current_account.id).exists?
     @protection, @attack = @service.action
   end
 
@@ -58,7 +58,7 @@ private
 
   def find_current_account
     @lobby_accounts = @lobby.accounts
-    @current_account = Account.where(id: @lobby_accounts, user_id: current_user).first
+    @current_account = Account.current_account(@lobby_accounts,current_user).first
   end
 
   def set_service

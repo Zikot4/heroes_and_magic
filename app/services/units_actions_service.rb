@@ -7,7 +7,7 @@ class UnitsActionsService
   end
 
   def challenge
-    current_unit = Unit.where(account_id: current_account, lap: lobby.lap).first
+    current_unit = Unit.current_units(current_account,lobby.lap).first
     current_unit.lap += 1
     unit.under_attack = current_unit.id
     unit.save

@@ -15,7 +15,7 @@ class LobbiesController < ApplicationController
     else
       lobby_accounts = @lobby.accounts
       @users = User.users(lobby_accounts).all
-      @users_ready = Account.users_ready(lobby_accounts).all
+      @users_ready = Account.accounts(lobby_accounts).all
     end
   end
 

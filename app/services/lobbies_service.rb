@@ -16,7 +16,7 @@ class LobbiesService
 
   def destroy
     lobby_accounts = @lobby.accounts.all
-    users=Account.where(id: lobby_accounts).all
+    users=Account.accounts_from_lobby(lobby_accounts).all
     users.destroy_all
     @lobby.destroy
   end
@@ -25,11 +25,11 @@ class LobbiesService
   def start
     if lobby.accounts.size == @lobby.count_of_users
       lobby_accounts = @lobby.accounts
-      accounts = Account.where(id: lobby_accounts)
+      accounts = Account.accounts_from_lobby(lobby_accounts)
       accounts.each do |account|
         return false if account.user_ready == false
       end
-      account = Account.where(id: accounts, user_id: @lobby.user_id).first
+      account = Account.current_account(accounts,@lobby.user_id).first
       account.current_step = true
       account.save
       @lobby.everyone_is_ready = true
@@ -41,7 +41,7 @@ class LobbiesService
   def join
     if lobby.accounts.size < lobby.count_of_users
       lobby_accounts = lobby.accounts
-      unless Account.where(id: lobby_accounts,user_id: user).exists?
+      unless Account.current_account(lobby_accounts, user).exists?
         account = user.accounts.new
         lobby.accounts << account
       end
@@ -50,7 +50,7 @@ class LobbiesService
 
   def ready
     lobby_accounts = lobby.accounts
-    account = Account.where(id: lobby_accounts,user_id: user).first
+    account = Account.current_account(lobby_accounts, user).first
     if account.user_ready == false
       account.user_ready = true
       account.save
