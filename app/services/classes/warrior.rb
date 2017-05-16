@@ -1,4 +1,4 @@
-class Warrior < Unit
+class Warrior
   HP = 80
   CAN_HEAL = false
   ACTION = {

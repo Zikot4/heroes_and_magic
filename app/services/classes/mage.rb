@@ -1,4 +1,4 @@
-class Mage < Unit
+class Mage 
   HP = 50
   CAN_HEAL = false
   ACTION = {

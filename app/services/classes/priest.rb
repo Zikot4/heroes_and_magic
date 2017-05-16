@@ -1,4 +1,4 @@
-class Priest < Unit
+class Priest
   HP = 50
   CAN_HEAL = true
   ACTION = {
