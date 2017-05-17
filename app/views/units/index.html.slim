@@ -1,28 +1,39 @@
--if can? :step, @lobby
-  font color="green"
-    = "YOUR TURN"
-  = "Current User: "
-  u
-    = current_user.email
-  hr
-    
-  h4 Unit ready to fight!
-  u
-    font color="green"
-      = @current_unit.id 
-      = " "
-      = @current_unit.variety
-      = " hp: "
-      = @current_unit.hp
--else
-  h3
-    = "Wait for your turn"
-hr
-- @my_units.each do |unit|
-  p
+div class="row"
+  div class="col-sm-8 blog-main"
     -if can? :step, @lobby
-      -if can? :heal, @lobby
-        =link_to heal_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}
+      font color="green"
+        = "YOUR TURN"
+      = "Current User: "
+      u
+        = current_user.email
+      hr
+        
+      h4 Unit ready to fight!
+      u
+        font color="green"
+          = @current_unit.id 
+          = " "
+          = @current_unit.variety
+          = " hp: "
+          = @current_unit.hp
+    -else
+      h3
+        = "Wait for your turn"
+    hr
+    - @my_units.each do |unit|
+      p
+        -if can? :step, @lobby
+          -if can? :heal, @lobby
+            =link_to heal_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}
+              = "account "
+              = unit.account_id 
+              = " | "
+              = unit.id
+              = " "
+              = unit.variety
+              = " hp: "
+              = unit.hp
+        -if ((can? :step, @lobby) && !(can? :heal, @lobby)) || (!can? :step, @lobby)
           = "account "
           = unit.account_id 
           = " | "
@@ -31,34 +42,29 @@ hr
           = unit.variety
           = " hp: "
           = unit.hp
-    -if ((can? :step, @lobby) && !(can? :heal, @lobby)) || (!can? :step, @lobby)
-      = "account "
-      = unit.account_id 
-      = " | "
-      = unit.id
-      = " "
-      = unit.variety
-      = " hp: "
-      = unit.hp
-hr
-- @units.each do |unit|
-  p
-    -if can? :step, @lobby
-      =link_to challenge_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}
-        = "account "
-        = unit.account_id 
-        = " | "
-        = unit.id
-        = " "
-        = unit.variety 
-        = " "
-        = unit.hp
-    -else
-      = "account "
-      = unit.account_id 
-      = " | "
-      = unit.id
-      = " "
-      = unit.variety 
-      = " hp: "
-      = unit.hp
+    hr
+    - @units.each do |unit|
+      p
+        -if can? :step, @lobby
+          =link_to challenge_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}
+            = "account "
+            = unit.account_id 
+            = " | "
+            = unit.id
+            = " "
+            = unit.variety 
+            = " "
+            = unit.hp
+        -else
+          = "account "
+          = unit.account_id 
+          = " | "
+          = unit.id
+          = " "
+          = unit.variety 
+          = " hp: "
+          = unit.hp
+  div class="col-sm-3 col-sm-offset-1 blog-sidebar scroll"
+    div class="sidebar-module"
+      h4 Actions:
+      = raw @history.actions

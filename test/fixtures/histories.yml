@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  lobby_id: 1
+  actions: MyText
+
+two:
+  lobby_id: 1
+  actions: MyText

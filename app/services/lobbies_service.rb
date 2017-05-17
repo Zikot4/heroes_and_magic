@@ -10,6 +10,7 @@ class LobbiesService
   def create
     @lobby = user.lobbies.new(params)
     @lobby.save
+    HistoryActions.create(@lobby)
     self.join
     @lobby
   end
@@ -33,6 +34,7 @@ class LobbiesService
       account.save
       @lobby.everyone_is_ready = true
       @lobby.save
+      HistoryActions.add(@lobby,StringConsts.game_start)
       return true
     end
   end
@@ -44,6 +46,7 @@ class LobbiesService
         account = user.accounts.new
         account.lobby_id = lobby.id
         account.save
+        HistoryActions.add(lobby,StringConsts.join_to_lobby(user.email))
       end
     end
   end
@@ -53,6 +56,7 @@ class LobbiesService
     if account.user_ready == false
       account.user_ready = true
       account.save
+      HistoryActions.add(lobby,StringConsts.ready(user.email))
     end
   end
 

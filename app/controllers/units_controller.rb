@@ -1,5 +1,5 @@
 class UnitsController < ApplicationController
-  before_action :set_lobby, only: [:new, :index, :challenge, :set_account,:action,:attack,:defence,:heal]
+  before_action :set_lobby, only: [:new, :index, :challenge, :set_account,:action,:attack,:defence,:heal,:set_service]
   before_action :find_current_account, only: [:index,:challenge,:action,:heal]
   before_action :set_service, only: [:action,:attack,:defence,:heal]
   before_action :set_account, only: [:new]
@@ -20,6 +20,7 @@ class UnitsController < ApplicationController
     @current_unit = Unit.current_units(@current_account, @lobby.lap).first
     @my_units = Unit.my_units(@current_account)
     @units = Unit.other_units(@lobby_accounts, @current_account)
+    @history = History.find_by_lobby(@lobby.id).first
   end
 
   def new
@@ -71,7 +72,7 @@ private
   end
 
   def set_service
-    @service = UnitsActionsService.new(find_current_account,nil,nil)
+    @service = UnitsActionsService.new(find_current_account,@lobby,nil)
   end
 
   def unit_params
