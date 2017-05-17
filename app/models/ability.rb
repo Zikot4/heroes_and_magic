@@ -15,7 +15,7 @@ class Ability
       can :step, Lobby do |lobby|
         units_under_attack = Unit.units_under_attack(lobby.accounts).all
         current_account = Account.current_account(lobby.accounts,user).first
-        (!units_under_attack.exists?) == (current_account.current_step)
+        (!units_under_attack.exists?) && (current_account.current_step)
       end
       can :heal,Lobby do |lobby|
         current_account = Account.current_account(lobby.accounts,user).first
