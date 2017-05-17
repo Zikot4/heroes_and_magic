@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170516103243) do
+ActiveRecord::Schema.define(version: 20170517164541) do
 
   create_table "accounts", force: :cascade do |t|
     t.integer  "user_id"
@@ -18,11 +18,7 @@ ActiveRecord::Schema.define(version: 20170516103243) do
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
     t.boolean  "current_step", default: false
-  end
-
-  create_table "accounts_lobbies", id: false, force: :cascade do |t|
-    t.integer "lobby_id",   null: false
-    t.integer "account_id", null: false
+    t.integer  "lobby_id"
   end
 
   create_table "lobbies", force: :cascade do |t|

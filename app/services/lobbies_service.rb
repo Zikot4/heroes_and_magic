@@ -24,8 +24,7 @@ class LobbiesService
   #return true if all right
   def start
     if lobby.accounts.size == @lobby.count_of_users
-      lobby_accounts = @lobby.accounts
-      accounts = Account.accounts_from_lobby(lobby_accounts)
+      accounts = Account.accounts_from_lobby(@lobby.accounts)
       accounts.each do |account|
         return false if account.user_ready == false
       end
@@ -43,14 +42,14 @@ class LobbiesService
       lobby_accounts = lobby.accounts
       unless Account.current_account(lobby_accounts, user).exists?
         account = user.accounts.new
-        lobby.accounts << account
+        account.lobby_id = lobby.id
+        account.save
       end
     end
   end
 
   def ready
-    lobby_accounts = lobby.accounts
-    account = Account.current_account(lobby_accounts, user).first
+    account = Account.current_account(lobby.accounts, user).first
     if account.user_ready == false
       account.user_ready = true
       account.save
