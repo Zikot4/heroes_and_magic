@@ -8,14 +8,10 @@ class UnitsActionsService
   end
 
   def heal
-    r = Random.new
     current_unit = Unit.current_units(current_account,lobby.lap).first
     current_unit.lap += 1
-    health_points = Object.const_get(current_unit.variety)::ACTION[:heal] + r.rand(0..5)
-    unit.hp += health_points
-    unit.save
-    current_unit.save
-    HistoryActions.add(lobby,StringConsts.heal(current_unit.id.to_s,unit.id.to_s,health_points.to_s))
+    health_points = heal_calculation(current_unit)
+    healing(current_unit, [unit], health_points)
   end
 
   def challenge
@@ -28,43 +24,20 @@ class UnitsActionsService
   end
 
   def defence
-    r = Random.new
     protection, attack = self.action
-    health_points = Object.const_get(attack.variety)::ACTION[:damage] + r.rand(0..5)
-    damage = (health_points * (Object.const_get(protection.variety)::ACTION[:defence])).round
+    health_points = damage_calculation(attack)
+    damage = (health_points * get_defence_value(protection)).round
     absorb = health_points - damage
-    protection.hp -= health_points
-    protection.under_attack = nil
-    if protection.hp <= 0
-      protection.destroy
-      HistoryActions.add(lobby,StringConsts.kill(attack.id.to_s,protection.id.to_s))
-    else
-      protection.save
-      HistoryActions.add(lobby,StringConsts.damage(protection.id.to_s,health_points.to_s,absorb.to_s))
-    end
+    damage(attack, protection, damage, absorb)
   end
 
   def attack
-    r = Random.new
     protection, attack = self.action
-    health_points = Object.const_get(attack.variety)::ACTION[:damage] + r.rand(0..5)
-    protection.hp -= health_points
-    protection.under_attack = nil
-    protection.save
-    if protection.hp <= 0
-      protection.destroy
-      HistoryActions.add(lobby,StringConsts.kill(attack.id.to_s,protection.id.to_s))
-    else
-      HistoryActions.add(lobby,StringConsts.damage(protection.id.to_s,health_points.to_s))
-      health_points = Object.const_get(protection.variety)::ACTION[:damage] + r.rand(0..5)
-      attack.hp -= health_points
-      if attack.hp <= 0
-        attack.destroy
-        HistoryActions.add(lobby,StringConsts.kill(attack.id.to_s,protection.id.to_s))
-      else
-        attack.save
-        HistoryActions.add(lobby,StringConsts.damage(attack.id.to_s, health_points.to_s))
-      end
+    damage = damage_calculation(attack)
+    damage(attack, protection, damage)
+    unless protection.destroyed?
+      damage = damage_calculation(protection)
+      damage(protection, attack, damage)
     end
   end
 
@@ -74,7 +47,7 @@ class UnitsActionsService
     [protection, attack]
   end
 private
-  attr_reader :current_account, :lobby, :unit
+  attr_reader :current_account, :lobby, :unit, :r
 
   def attacking_unit
     return Unit.attacking_unit(defending_unit.under_attack).first
@@ -82,5 +55,40 @@ private
 
   def defending_unit
     return Unit.defending_unit(current_account.id).first
+  end
+
+  def healing(who, whom, hp)
+    whom.each do |unit|
+      unit.hp += hp
+      unit.save
+      who.save
+      HistoryActions.add(lobby,StringConsts.heal(who.id.to_s, unit.id.to_s, hp.to_s))
+    end
+  end
+
+  def damage(who, whom, hp, absorb = "0")
+    whom.hp -= hp
+    whom.under_attack = nil
+    if whom.hp <= 0
+      whom.destroy
+      HistoryActions.add(lobby,StringConsts.kill(who.id.to_s,whom.id.to_s))
+    else
+      whom.save
+      HistoryActions.add(lobby,StringConsts.damage(whom.id.to_s,hp.to_s,absorb.to_s))
+    end
+  end
+
+  def damage_calculation(unit)
+    r = Random.new
+    return Object.const_get(unit.variety)::ACTION[:damage] + r.rand(0..5)
+  end
+
+  def heal_calculation(unit)
+    r = Random.new
+    return Object.const_get(unit.variety)::ACTION[:heal] + r.rand(0..5)
+  end
+
+  def get_defence_value(unit)
+    return Object.const_get(unit.variety)::ACTION[:defence]
   end
 end
