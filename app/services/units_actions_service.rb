@@ -32,7 +32,7 @@ class UnitsActionsService
   def attack
     protection, attack = self.action
     damage = damage_calculation(attack)
-    damage(attack, protection, damage) if
+    damage(attack, protection, damage)
     unless protection.destroyed?
       damage = damage_calculation(protection)
       damage(protection, attack, damage)
@@ -66,7 +66,7 @@ private
 
   def damage(who, whom, hp, absorb = 0)
     whom.under_attack = nil
-    return "missed" if miss?(who.id.to_s)
+    return whom.save if miss?(who.id.to_s)
     hp, absorb = critical_hit(hp, absorb)
     whom.hp -= hp
     HistoryActions.add(lobby,StringConsts.damage(whom.id.to_s,hp.to_s, absorb.to_s))
@@ -75,16 +75,16 @@ private
 
   def damage_calculation(unit)
     r = Random.new
-    return Object.const_get(unit.variety)::ACTION[:damage] + r.rand(0..5)
+    return Object.const_get(unit.variety)::ACTIONS[:damage] + r.rand(0..5)
   end
 
   def heal_calculation(unit)
     r = Random.new
-    return Object.const_get(unit.variety)::ACTION[:heal] + r.rand(0..5)
+    return Object.const_get(unit.variety)::ACTIONS[:heal] + r.rand(0..5)
   end
 
   def get_defence_value(unit)
-    return Object.const_get(unit.variety)::ACTION[:defence]
+    return Object.const_get(unit.variety)::ACTIONS[:defence]
   end
 
   def get_damage_absorb(who, whom = nil)
@@ -116,7 +116,7 @@ private
 
   def miss?(who)
     r = Random.new
-    if (r.rand(0..6)) == 0
+    if (r.rand(0..6)) == 0               # 1/7 miss
       HistoryActions.add(lobby,StringConsts.miss(who))
       return true
     end

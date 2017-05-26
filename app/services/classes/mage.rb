@@ -1,7 +1,7 @@
-class Mage 
+class Mage
   HP = 50
   CAN_HEAL = false
-  ACTION = {
+  ACTIONS = {
     :damage => 18,
     :defence => 0.8
   }

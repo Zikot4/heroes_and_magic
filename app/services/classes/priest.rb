@@ -1,7 +1,7 @@
 class Priest
   HP = 50
   CAN_HEAL = true
-  ACTION = {
+  ACTIONS= {
     :heal => 9,
     :damage => 9,
     :defence => 0.8

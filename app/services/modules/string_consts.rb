@@ -12,7 +12,7 @@ module StringConsts
   end
 
   def self.damage(whom, hp, absorb)
-    return whom << "was damaged on " <<
+    return whom << " was damaged on " <<
               hp << " health points(absorb: " << absorb << ")"
   end
 
