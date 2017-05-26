@@ -25,16 +25,14 @@ class UnitsActionsService
 
   def defence
     protection, attack = self.action
-    health_points = damage_calculation(attack)
-    damage = (health_points * get_defence_value(protection)).round
-    absorb = health_points - damage
+    damage, absorb = get_damage_absorb(attack, protection)
     damage(attack, protection, damage, absorb)
   end
 
   def attack
     protection, attack = self.action
     damage = damage_calculation(attack)
-    damage(attack, protection, damage)
+    damage(attack, protection, damage) if
     unless protection.destroyed?
       damage = damage_calculation(protection)
       damage(protection, attack, damage)
@@ -47,7 +45,7 @@ class UnitsActionsService
     [protection, attack]
   end
 private
-  attr_reader :current_account, :lobby, :unit, :r
+  attr_reader :current_account, :lobby, :unit
 
   def attacking_unit
     return Unit.attacking_unit(defending_unit.under_attack).first
@@ -66,16 +64,13 @@ private
     end
   end
 
-  def damage(who, whom, hp, absorb = "0")
-    whom.hp -= hp
+  def damage(who, whom, hp, absorb = 0)
     whom.under_attack = nil
-    if whom.hp <= 0
-      whom.destroy
-      HistoryActions.add(lobby,StringConsts.kill(who.id.to_s,whom.id.to_s))
-    else
-      whom.save
-      HistoryActions.add(lobby,StringConsts.damage(whom.id.to_s,hp.to_s,absorb.to_s))
-    end
+    return "missed" if miss?(who.id.to_s)
+    hp, absorb = critical_hit(hp, absorb)
+    whom.hp -= hp
+    HistoryActions.add(lobby,StringConsts.damage(whom.id.to_s,hp.to_s, absorb.to_s))
+    whom.save unless unit_dead?(who, whom)
   end
 
   def damage_calculation(unit)
@@ -90,5 +85,40 @@ private
 
   def get_defence_value(unit)
     return Object.const_get(unit.variety)::ACTION[:defence]
+  end
+
+  def get_damage_absorb(who, whom = nil)
+    health_points = damage_calculation(who)
+    return health_points if whom.nil?
+    damage = (health_points * get_defence_value(whom)).round
+    absorb = health_points - damage
+    return [damage, absorb]
+  end
+
+  def critical_hit(damage, absorb)
+    r = Random.new
+    if (r.rand(0..2)) == 0               # 1/3 critical hit
+      critical = r.rand(3..6)
+      damage += absorb + critical
+      absorb = 0
+      HistoryActions.add(lobby,StringConsts.critical_hit(critical.to_s))
+    end
+    [damage, absorb]
+  end
+
+  def unit_dead?(who, whom)
+    if whom.hp <= 0
+      whom.destroy
+      HistoryActions.add(lobby,StringConsts.kill(who.id.to_s,whom.id.to_s))
+      return true
+    end
+  end
+
+  def miss?(who)
+    r = Random.new
+    if (r.rand(0..6)) == 0
+      HistoryActions.add(lobby,StringConsts.miss(who))
+      return true
+    end
   end
 end

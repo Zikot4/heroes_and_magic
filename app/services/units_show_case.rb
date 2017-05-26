@@ -2,7 +2,7 @@ module UnitsShowCase
   extend ActiveSupport::Concern
   include ActiveModel::Validations
 
-  def index
+  def next
     raise NotImplementedError
   end
 

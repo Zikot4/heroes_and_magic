@@ -8,10 +8,10 @@ module StringConsts
   end
 
   def self.kill(who, whom)
-    return "Person was killed (" << whom << ") by (" << who << ")"
+    return "Person (" << whom << ") was killed by (" << who << ")"
   end
 
-  def self.damage(whom, hp, absorb = "0")
+  def self.damage(whom, hp, absorb)
     return whom << "was damaged on " <<
               hp << " health points(absorb: " << absorb << ")"
   end
@@ -26,5 +26,13 @@ module StringConsts
 
   def self.ready(who)
     return who + " User is ready!"
+  end
+
+  def self.critical_hit(value)
+    return "+" << value << " critical hit!"
+  end
+
+  def self.miss(who)
+    return "Unit(" << who << ") Missed!"
   end
 end

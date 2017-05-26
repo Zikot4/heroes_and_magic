@@ -66,7 +66,7 @@ class LobbiesController < ApplicationController
   #PUT /lobbies/:url/start
   def start
     authorize! :join, @lobby
-    if @service.start
+    if @service.start?
       redirect_to lobby_units_path(@lobby.url)
     else
       redirect_to lobby_path(@lobby.url)

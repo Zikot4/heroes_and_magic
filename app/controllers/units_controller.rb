@@ -16,7 +16,7 @@ class UnitsController < ApplicationController
     redirect_to lobby_action_path(@lobby.url) if Unit.where(account_id: @current_account.id).where.not(under_attack: nil).exists?
     @units_under_attack = Unit.units_under_attack(@lobby_accounts).all
     serv = UnitsShowService.new(@lobby,@current_account,@lobby_accounts)
-    serv.index
+    serv.next
     @current_unit = Unit.current_units(@current_account, @lobby.lap).first
     @my_units = Unit.my_units(@current_account)
     @units = Unit.other_units(@lobby_accounts, @current_account)

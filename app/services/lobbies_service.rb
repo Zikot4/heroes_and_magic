@@ -23,7 +23,7 @@ class LobbiesService
   end
 
   #return true if all right
-  def start
+  def start?
     if lobby.accounts.size == @lobby.count_of_users
       accounts = Account.accounts_from_lobby(@lobby.accounts)
       accounts.each do |account|

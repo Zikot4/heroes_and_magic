@@ -15,7 +15,7 @@ module LobbiesCase
   end
 
   #return true if all right
-  def start
+  def start?
     raise NotImplementedError
   end
 

@@ -7,7 +7,7 @@ class UnitsShowService
     @lobby_accounts = lobby_accounts
   end
 
-  def index
+  def next
     next_lap
     next_step
   end
