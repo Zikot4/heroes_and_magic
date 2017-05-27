@@ -1,10 +1,10 @@
 class LobbiesController < ApplicationController
-  before_action :set_lobby, only: [:show, :edit,:update, :destroy, :join, :ready, :start]
+  before_action :set_lobby, only: [:index, :show, :edit,:update, :destroy, :join, :ready, :start, :current_account]
 
   # GET /lobbies
   # GET /lobbies.json
   def index
-    @lobbies = Lobby.all
+    @lobbies = Lobby.all.includes(:accounts)
   end
 
   # GET /lobbies/1
@@ -16,6 +16,7 @@ class LobbiesController < ApplicationController
       lobby_accounts = @lobby.accounts
       @users = User.users(lobby_accounts).all
       @users_ready = Account.accounts(lobby_accounts).all
+      @units = Unit.my_units(current_account)
     end
   end
 
@@ -82,7 +83,10 @@ class LobbiesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def lobby_params
-      params.require(:lobby).permit(:url, :count_of_users)#TODO change this
+      params.require(:lobby).permit(:count_of_users, :game_mode)
     end
 
+    def current_account
+      return current_account = Account.current_account(@lobby.accounts,current_user).first
+    end
 end

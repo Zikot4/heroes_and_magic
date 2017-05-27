@@ -5,6 +5,7 @@ table
     tr
       th Url
       th Count of users
+      th Users
       th
       th
       th
@@ -14,6 +15,10 @@ table
       tr
         td = lobby.url
         td = lobby.count_of_users
+        td 
+          = lobby.accounts.length
+          = "/" 
+          = lobby.count_of_users
         td = link_to 'Show', lobby_path(lobby.url)
         td = link_to 'Edit', edit_lobby_path(lobby.url)
         td = link_to 'Destroy', lobby_path(lobby.url), data: { confirm: 'Are you sure?' }, method: :delete

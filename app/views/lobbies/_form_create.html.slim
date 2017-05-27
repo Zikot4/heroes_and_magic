@@ -7,9 +7,9 @@
           li = message
 
   .field
-    = f.label :url
-    = f.text_field :url
-  .field
     = f.label :count_of_users
     = f.number_field :count_of_users
+  .field
+    = f.label :game_mode
+    = f.select :game_mode, Lobby::GAME_MODE
   .actions = f.submit

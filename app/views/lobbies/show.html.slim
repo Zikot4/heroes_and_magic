@@ -10,21 +10,28 @@ p
 hr
 p  
   - @users.each do |user|
-    p 
+    li 
       = "User: "
       = user.email
 p
-  -@users_ready.each do |user|
-    p 
-      =user.user_ready
+  = "ready: "
+  -@users_ready.each do |user| 
+    =user.user_ready
+    =" "
 -unless can? :join, @lobby
   hr
   =link_to "Join", join_lobby_path(@lobby.url), data: { method: :post}
 -if can? :join, @lobby
   hr
   =link_to "Ready", ready_lobby_path(@lobby.url), data: { method: :put } 
-  hr
-  = render partial: "lobbies/form_test", locals: {lobby: @lobby}
+  -if can? :create, @lobby
+    hr
+    = render partial: "lobbies/form_test", locals: {lobby: @lobby}
+  br
+  - @units.each do |unit|
+    li
+      = unit.variety
+    br
   hr
   = link_to "Start", start_lobby_path(@lobby.url),data: {method: :put}
   hr

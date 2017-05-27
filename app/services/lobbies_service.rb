@@ -9,6 +9,7 @@ class LobbiesService
 
   def create
     @lobby = user.lobbies.new(params)
+    GenerateUrl.generate_url(@lobby)
     @lobby.save
     HistoryActions.create(@lobby)
     self.join
@@ -40,7 +41,7 @@ class LobbiesService
   end
 
   def join
-    if lobby.accounts.size < lobby.count_of_users
+    if lobby.accounts.length < lobby.count_of_users
       lobby_accounts = lobby.accounts
       unless Account.current_account(lobby_accounts, user).exists?
         account = user.accounts.new

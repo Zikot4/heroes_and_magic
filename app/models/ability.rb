@@ -22,6 +22,11 @@ class Ability
         unit = Unit.current_units(current_account, lobby.lap).first
         !(unit.nil?) ? Object.const_get(unit.variety)::CAN_HEAL : false
       end
+      can :create, Lobby do |lobby|
+        current_account = Account.current_account(lobby.accounts,user).first
+        units = Unit.my_units(current_account).all
+        (units.size < lobby.game_mode) ? true : false
+      end
     end
 
     # The first argument to `can` is the action you are giving the user

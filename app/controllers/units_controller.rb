@@ -24,6 +24,7 @@ class UnitsController < ApplicationController
   end
 
   def new
+    authorize! :create, @lobby
     service = UnitsCreateService.new(@account,unit_params)
     service.create
     redirect_to lobby_path(@lobby.url)
