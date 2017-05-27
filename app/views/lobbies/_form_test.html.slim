@@ -1,6 +1,6 @@
 = form_for [lobby , Unit.new],url: new_lobby_unit_path(lobby.url), method: "get" do |f|
 
   .field
-    = f.select :variety, Unit::CLASSES
+    = f.select :variety, Unit::CLASSES, {}, { class: "form-control"}
 
-    .actions = f.submit
+    .actions = f.submit class: "btn btn-default"

@@ -1,15 +1,18 @@
 
-h3 
+h3 class="alliance"
   = "YOUR Unit "
+  br
   = @protection.id
   = " "
   = @protection.variety
   = " hp: "
   = @protection.hp
+p
   = " IS UNDER ATTACK!"
   
-p 
+p class = "enemy"
   = "ATTACK BY Unit "
+  br
   = @attack.id
   = " "
   = @attack.variety

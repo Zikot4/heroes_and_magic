@@ -24,7 +24,7 @@ div class="row"
       p
         -if can? :step, @lobby
           -if can? :heal, @lobby
-            =link_to heal_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}
+            =link_to heal_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}, class: :heal
               = "account "
               = unit.account_id 
               = " | "
@@ -34,19 +34,20 @@ div class="row"
               = " hp: "
               = unit.hp
         -if ((can? :step, @lobby) && !(can? :heal, @lobby)) || (!can? :step, @lobby)
-          = "account "
-          = unit.account_id 
-          = " | "
-          = unit.id
-          = " "
-          = unit.variety
-          = " hp: "
-          = unit.hp
+          div class="alliance"
+            = "account "
+            = unit.account_id 
+            = " | "
+            = unit.id
+            = " "
+            = unit.variety
+            = " hp: "
+            = unit.hp
     hr
     - @units.each do |unit|
       p
         -if can? :step, @lobby
-          =link_to challenge_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}
+          =link_to challenge_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}, class: :enemy
             = "account "
             = unit.account_id 
             = " | "

@@ -1,5 +1,7 @@
 class LobbiesController < ApplicationController
-  before_action :set_lobby, only: [:index, :show, :edit,:update, :destroy, :join, :ready, :start, :current_account]
+  before_action :set_lobby, only: [:show,:update,:destroy,
+                                  :join, :ready, :start,
+                                  :leave, :current_account]
 
   # GET /lobbies
   # GET /lobbies.json
@@ -10,12 +12,13 @@ class LobbiesController < ApplicationController
   # GET /lobbies/1
   # GET /lobbies/1.json
   def show
+    return redirect_to root_path if @lobby.nil?
     if @lobby.everyone_is_ready
       redirect_to lobby_units_path(@lobby.url)
     else
-      lobby_accounts = @lobby.accounts
-      @users = User.users(lobby_accounts).all
-      @users_ready = Account.accounts(lobby_accounts).all
+      @users = User.users(@lobby.accounts).all
+      @users_ready = Account.accounts_ready(@lobby.accounts).all
+      @current_account = Account.current_account(@lobby.accounts,current_user.id).first
       @units = Unit.my_units(current_account)
     end
   end
@@ -72,6 +75,12 @@ class LobbiesController < ApplicationController
     else
       redirect_to lobby_path(@lobby.url)
     end
+  end
+
+  def leave
+    authorize! :leave, @lobby
+    @service.leave
+    redirect_to root_path
   end
 
   private

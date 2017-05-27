@@ -23,6 +23,9 @@ module LobbiesCase
     raise NotImplementedError
   end
 
+  def leave
+    raise NotImplementedError
+  end
   def success?
       errors.none?
   end

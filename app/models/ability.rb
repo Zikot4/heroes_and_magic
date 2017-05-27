@@ -8,7 +8,7 @@ class Ability
       can :manage, :all
     else
       can :join, Lobby do |lobby|
-        user_account = Account.where(user_id: user.id,).all
+        user_account = Account.where(user_id: user.id).all
         account = lobby.accounts.where(id: user_account).first
         !account.nil?
       end
@@ -26,6 +26,10 @@ class Ability
         current_account = Account.current_account(lobby.accounts,user).first
         units = Unit.my_units(current_account).all
         (units.size < lobby.game_mode) ? true : false
+      end
+      can :leave, Lobby do |lobby|
+        current_account = Account.current_account(lobby.accounts,user).first
+        user.id == current_account.user_id
       end
     end
 

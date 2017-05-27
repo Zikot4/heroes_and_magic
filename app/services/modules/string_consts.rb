@@ -8,7 +8,7 @@ module StringConsts
   end
 
   def self.kill(who, whom)
-    return "Person (" << whom << ") was killed by (" << who << ")"
+    return "<font color=\"red\">Person (" << whom << ") was killed by (" << who << ")</font>"
   end
 
   def self.damage(whom, hp, absorb)
@@ -17,7 +17,7 @@ module StringConsts
   end
 
   def self.game_start
-    return "All Ready, The Game Began"
+    return "<font color=\"green\">All Ready, The Game Began</font>"
   end
 
   def self.join_to_lobby(who)

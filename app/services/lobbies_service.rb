@@ -25,7 +25,7 @@ class LobbiesService
 
   #return true if all right
   def start?
-    if lobby.accounts.size == @lobby.count_of_users
+    if lobby.accounts.length == @lobby.count_of_users
       accounts = Account.accounts_from_lobby(@lobby.accounts)
       accounts.each do |account|
         return false if account.user_ready == false
@@ -54,13 +54,18 @@ class LobbiesService
 
   def ready
     account = Account.current_account(lobby.accounts, user).first
-    if account.user_ready == false
-      account.user_ready = true
-      account.save
-      HistoryActions.add(lobby,StringConsts.ready(user.email))
-    end
+    (account.user_ready == false) ? account.user_ready = true : account.user_ready = false
+    account.save
   end
 
+  def leave
+    account = Account.current_account(lobby.accounts, user).first
+    account.destroy
+    lobby.user_id = nil if account.user_id == lobby.user_id
+    account = Account.accounts(lobby.accounts).first
+    lobby.user_id = account.user_id if lobby.accounts.length != 0
+    (lobby.accounts.length == 0) ? lobby.destroy : lobby.save
+  end
 private
   attr_reader :lobby, :user, :params
 end

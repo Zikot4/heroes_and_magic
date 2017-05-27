@@ -6,6 +6,10 @@ module UnitsShowCase
     raise NotImplementedError
   end
 
+  def select_units
+    raise NotImplementedError
+  end
+  
   def success?
       errors.none?
   end
