@@ -1,28 +1,33 @@
 h1 Listing lobbies
+div class="row"
+  div class="col-sm-6 blog-main"
+    table
+      thead
+        tr
+          th Url
+          th Count of users
+          th Users
+          th
+          th
+          th
 
-table
-  thead
-    tr
-      th Url
-      th Count of users
-      th Users
-      th
-      th
-      th
+      tbody
+        - @lobbies.each do |lobby|
+          tr
+            td = lobby.url
+            td = lobby.count_of_users
+            td 
+              = lobby.accounts.length
+              = "/" 
+              = lobby.count_of_users
+            td = link_to 'Show', lobby_path(lobby.url)
+            td = link_to 'Edit', edit_lobby_path(lobby.url)
+            td = link_to 'Destroy', lobby_path(lobby.url), data: { confirm: 'Are you sure?' }, method: :delete
+            
+    br
 
-  tbody
-    - @lobbies.each do |lobby|
-      tr
-        td = lobby.url
-        td = lobby.count_of_users
-        td 
-          = lobby.accounts.length
-          = "/" 
-          = lobby.count_of_users
-        td = link_to 'Show', lobby_path(lobby.url)
-        td = link_to 'Edit', edit_lobby_path(lobby.url)
-        td = link_to 'Destroy', lobby_path(lobby.url), data: { confirm: 'Are you sure?' }, method: :delete
-        
-br
-
-= link_to 'New Lobby', new_lobby_path
+    = link_to 'New Lobby', new_lobby_path
+  div class="col-sm-3 blog-main"  
+    - @accounts.each do |account|
+      li 
+        = link_to account.lobby.url.to_s, lobby_path(account.lobby.url)

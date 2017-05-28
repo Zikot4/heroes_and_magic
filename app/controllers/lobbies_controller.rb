@@ -6,7 +6,8 @@ class LobbiesController < ApplicationController
   # GET /lobbies
   # GET /lobbies.json
   def index
-    @lobbies = Lobby.all.includes(:accounts)
+    @lobbies = Lobby.where(hidden: false).includes(:accounts).all
+    @accounts = Account.where(user_id: current_user).includes(:lobby).all
   end
 
   # GET /lobbies/1
@@ -78,7 +79,6 @@ class LobbiesController < ApplicationController
   end
 
   def leave
-    authorize! :leave, @lobby
     @service.leave
     redirect_to root_path
   end
@@ -92,7 +92,7 @@ class LobbiesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def lobby_params
-      params.require(:lobby).permit(:count_of_users, :game_mode)
+      params.require(:lobby).permit(:count_of_users, :game_mode, :hidden)
     end
 
     def current_account

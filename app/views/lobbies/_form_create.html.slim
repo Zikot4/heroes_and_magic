@@ -12,4 +12,7 @@
   .field
     = f.label :game_mode
     = f.select :game_mode, Lobby::GAME_MODE
+  .field
+    =f.label :hidden
+    =f.check_box :hidden
   .actions = f.submit

@@ -8,7 +8,7 @@ class UnitsCreateService
 
   def create
     unit = account.units.create(params)
-    unit.hp = Object.const_get(unit.variety)::HP
+    unit.hp = Object.const_get(unit.variety)::INFO[:hp]
     unit.save
   end
 

@@ -20,16 +20,12 @@ class Ability
       can :heal,Lobby do |lobby|
         current_account = Account.current_account(lobby.accounts,user).first
         unit = Unit.current_units(current_account, lobby.lap).first
-        !(unit.nil?) ? Object.const_get(unit.variety)::CAN_HEAL : false
+        !(unit.nil?) ? Object.const_get(unit.variety)::HEAL[:able] : false
       end
       can :create, Lobby do |lobby|
         current_account = Account.current_account(lobby.accounts,user).first
         units = Unit.my_units(current_account).all
         (units.size < lobby.game_mode) ? true : false
-      end
-      can :leave, Lobby do |lobby|
-        current_account = Account.current_account(lobby.accounts,user).first
-        user.id == current_account.user_id
       end
     end
 

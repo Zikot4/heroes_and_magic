@@ -1,9 +1,23 @@
 class Mage
-  HP = 50
-  CAN_HEAL = false
-  ACTIONS = {
-    :damage => 18,
-    :defence => 0.8
-  }
+  include Personable
+  include Healable
+  include Damageable
+  include Resistable
 
+  INFO = {
+    :hp    => 50,
+    :type  => "Mage"
+  }
+  HEAL = {
+    :able  => false
+  }
+  DAMAGE = {
+    :range  => true,
+    :type   => :magic,
+    :value  => 18
+  }
+  RESIST = {
+    :magic    => 0.5,
+    :physical => 0.8
+  }
 end

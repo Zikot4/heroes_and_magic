@@ -16,11 +16,8 @@ class UnitsActionsService
 
   def challenge
     current_unit = Unit.current_units(current_account,lobby.lap).first
-    current_unit.lap += 1
-    unit.under_attack = current_unit.id
-    unit.save
-    current_unit.save
-    HistoryActions.add(lobby,StringConsts.challenge(current_unit.id.to_s,unit.id.to_s))
+    challenge!(current_unit)
+    defence if (get_range_value(current_unit) == true) && (get_range_value(unit) == false)
   end
 
   def defence
@@ -52,7 +49,7 @@ private
   end
 
   def defending_unit
-    return Unit.defending_unit(current_account.id).first
+    return Unit.defending_unit(lobby.accounts).first
   end
 
   def healing(who, whom, hp)
@@ -75,29 +72,34 @@ private
 
   def damage_calculation(unit)
     r = Random.new
-    return Object.const_get(unit.variety)::ACTIONS[:damage] + r.rand(0..5)
+    return Object.const_get(unit.variety)::DAMAGE[:value] + r.rand(0..5)
   end
 
   def heal_calculation(unit)
     r = Random.new
-    return Object.const_get(unit.variety)::ACTIONS[:heal] + r.rand(0..5)
+    return Object.const_get(unit.variety)::HEAL[:value] + r.rand(0..5)
   end
 
-  def get_defence_value(unit)
-    return Object.const_get(unit.variety)::ACTIONS[:defence]
+  def get_defence_value(who, whom)
+    type = Object.const_get(who.variety)::DAMAGE[:type]
+    return Object.const_get(whom.variety)::RESIST[type]
+  end
+
+  def get_range_value(unit)
+    return Object.const_get(unit.variety)::DAMAGE[:range]
   end
 
   def get_damage_absorb(who, whom = nil)
     health_points = damage_calculation(who)
     return health_points if whom.nil?
-    damage = (health_points * get_defence_value(whom)).round
+    damage = (health_points * get_defence_value(who, whom)).round
     absorb = health_points - damage
     return [damage, absorb]
   end
 
   def critical_hit(damage, absorb)
     r = Random.new
-    if (r.rand(0..2)) == 0               # 1/3 critical hit
+    if (r.rand(0..3)) == 0               # 1/4 critical hit
       critical = r.rand(3..6)
       damage += absorb + critical
       absorb = 0
@@ -120,5 +122,13 @@ private
       HistoryActions.add(lobby,StringConsts.miss(who))
       return true
     end
+  end
+
+  def challenge!(current_unit)
+    current_unit.lap += 1
+    unit.under_attack = current_unit.id
+    unit.save
+    current_unit.save
+    HistoryActions.add(lobby,StringConsts.challenge(current_unit.id.to_s,unit.id.to_s))
   end
 end
