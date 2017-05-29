@@ -22,6 +22,15 @@ class Ability
         unit = Unit.current_units(current_account, lobby.lap).first
         !(unit.nil?) ? Object.const_get(unit.variety)::HEAL[:able] : false
       end
+      can :resurrection, Lobby do |lobby|
+        current_account = Account.current_account(lobby.accounts,user).first
+        unit = Unit.current_units(current_account, lobby.lap).first
+        if !(unit.nil?)
+          (unit.hp < 10) ? false : Object.const_get(unit.variety)::HEAL[:resurrectionable]
+        else
+          false
+        end
+      end
       can :create, Lobby do |lobby|
         current_account = Account.current_account(lobby.accounts,user).first
         units = Unit.my_units(current_account).all

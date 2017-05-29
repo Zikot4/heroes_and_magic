@@ -9,7 +9,8 @@ class Mage
     :type  => "Mage"
   }
   HEAL = {
-    :able  => false
+    :able  => false,
+    :resurrectionable   => false
   }
   DAMAGE = {
     :range  => true,

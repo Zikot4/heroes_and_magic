@@ -22,8 +22,27 @@ div class="row"
     hr
     - @my_units.each do |unit|
       p
-        -if can? :step, @lobby
-          -if can? :heal, @lobby
+        -if unit.dead && !(can? :resurrection, @lobby)
+          s
+            = "account "
+            = unit.account_id 
+            = " | "
+            = unit.id
+            = " "
+            = unit.variety
+          = " - Dead"
+        -if unit.dead && (can? :resurrection, @lobby)
+          s
+            =link_to resurrection_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}
+              = "account "
+              = unit.account_id 
+              = " | "
+              = unit.id
+              = " "
+              = unit.variety
+              = " - Dead"
+        -else
+          -if (can? :step, @lobby) && (can? :heal, @lobby) && !(unit.dead)
             =link_to heal_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}, class: :heal
               = "account "
               = unit.account_id 
@@ -33,38 +52,48 @@ div class="row"
               = unit.variety
               = " hp: "
               = unit.hp
-        -if ((can? :step, @lobby) && !(can? :heal, @lobby)) || (!can? :step, @lobby)
-          div class="alliance"
+          -if (((can? :step, @lobby) && !(can? :heal, @lobby)) || (!can? :step, @lobby)) && !unit.dead
+            div class="alliance"
+              = "account "
+              = unit.account_id 
+              = " | "
+              = unit.id
+              = " "
+              = unit.variety
+              = " hp: "
+              = unit.hp
+    hr
+    - @units.each do |unit|
+      p
+        -if unit.dead
+          s
             = "account "
             = unit.account_id 
             = " | "
             = unit.id
             = " "
             = unit.variety
-            = " hp: "
-            = unit.hp
-    hr
-    - @units.each do |unit|
-      p
-        -if can? :step, @lobby
-          =link_to challenge_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}, class: :enemy
+          = " - Dead"
+        -else
+          -if can? :step, @lobby
+            =link_to challenge_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}, class: :enemy
+              = "account "
+              = unit.account_id 
+              = " | "
+              = unit.id
+              = " "
+              = unit.variety 
+              = " "
+              = unit.hp
+          -else
             = "account "
             = unit.account_id 
             = " | "
             = unit.id
             = " "
             = unit.variety 
-            = " "
+            = " hp: "
             = unit.hp
-        -else
-          = "account "
-          = unit.account_id 
-          = " | "
-          = unit.id
-          = " "
-          = unit.variety 
-          = " hp: "
-          = unit.hp
   div class="col-sm-3 col-sm-offset-1 blog-sidebar scroll"
     div class="sidebar-module"
       h4 Actions:

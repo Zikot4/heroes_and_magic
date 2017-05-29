@@ -10,7 +10,7 @@ class Unit < ApplicationRecord
   scope :defending_unit, lambda {|current_account_id| where(account_id: current_account_id).where.not(under_attack: nil)}
   scope :current_account_under_attack, lambda {|current_account_id| where(account_id: current_account_id).where.not(under_attack: nil)}
   scope :units_under_attack, lambda {|lobby_accounts| where(account_id: lobby_accounts).where.not(under_attack: nil)}
-  scope :current_units,   lambda {|current_account, lobby_lap|where(account_id: current_account, lap: lobby_lap)}
+  scope :current_units,   lambda {|current_account, lobby_lap|where(account_id: current_account, lap: lobby_lap, dead: false)}
   scope :my_units,       lambda {|current_account| where(account_id: current_account)}
   scope :other_units,    lambda {|lobby_accounts, current_account|where(account_id: lobby_accounts).where.not(account_id:  current_account)}
 end

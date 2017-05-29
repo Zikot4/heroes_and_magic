@@ -10,6 +10,7 @@ class Priest
   }
   HEAL = {
     :able  => true,
+    :resurrectionable   => true,
     :type  => :magic,
     :value => 9
   }

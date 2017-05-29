@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     resources :units do
       put :challenge, on: :member, controller: 'units'
       put :heal, on: :member, controller: 'units'
+      put :resurrection, on: :member, controller: 'units'
     end
     get :action, controller: 'units'
     put :defence, controller: 'units'

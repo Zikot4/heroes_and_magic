@@ -9,7 +9,8 @@ class Warrior
     :type  => "Warrior"
   }
   HEAL = {
-    :able  => false
+    :able  => false,
+    :resurrectionable   => false
   }
   DAMAGE = {
     :range  => false,

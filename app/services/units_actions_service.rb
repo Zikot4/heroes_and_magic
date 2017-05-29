@@ -41,6 +41,19 @@ class UnitsActionsService
     attack = attacking_unit
     [protection, attack]
   end
+
+  def resurrection
+    current_unit = Unit.current_units(current_account,lobby.lap).first
+    current_unit.lap += 1
+    hp = (current_unit.hp * 0.8).round
+    current_unit.hp -= hp
+    unit.dead = false
+    unit.hp = hp
+    unit.lap = lobby.lap + 1
+    unit.save
+    current_unit.save
+  end
+
 private
   attr_reader :current_account, :lobby, :unit
 
@@ -67,7 +80,8 @@ private
     hp, absorb = critical_hit(hp, absorb)
     whom.hp -= hp
     HistoryActions.add(lobby,StringConsts.damage(whom.id.to_s,hp.to_s, absorb.to_s))
-    whom.save unless unit_dead?(who, whom)
+    make_dead(who, whom)
+    whom.save
   end
 
   def damage_calculation(unit)
@@ -108,11 +122,11 @@ private
     [damage, absorb]
   end
 
-  def unit_dead?(who, whom)
+  def make_dead(who, whom)
     if whom.hp <= 0
-      whom.destroy
+      whom.dead = true
+      whom.save
       HistoryActions.add(lobby,StringConsts.kill(who.id.to_s,whom.id.to_s))
-      return true
     end
   end
 

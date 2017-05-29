@@ -21,7 +21,11 @@ module UnitsActionsCase
   def heal
     raise NotImplementedError
   end
-  
+
+  def resurrection
+    raise NotImplementedError
+  end
+
   def success?
       errors.none?
   end

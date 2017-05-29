@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170528201312) do
+ActiveRecord::Schema.define(version: 20170529125736) do
 
   create_table "accounts", force: :cascade do |t|
     t.integer  "user_id"
@@ -44,10 +44,11 @@ ActiveRecord::Schema.define(version: 20170528201312) do
     t.integer  "account_id"
     t.string   "variety"
     t.integer  "hp"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
     t.integer  "under_attack"
     t.integer  "lap",          default: 0
+    t.boolean  "dead",         default: false
   end
 
   create_table "users", force: :cascade do |t|

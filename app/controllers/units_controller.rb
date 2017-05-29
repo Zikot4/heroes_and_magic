@@ -1,9 +1,10 @@
 class UnitsController < ApplicationController
-  before_action :set_lobby, only: [:new, :index, :destroy, :challenge, :set_account, :action, :attack, :defence, :heal, :set_service]
+  before_action :set_lobby, only: [:new, :index, :destroy, :challenge, :set_account, :action, :attack, :defence, :heal, :set_service, :resurrection]
   before_action :find_current_account, only: [:index, :challenge, :action, :heal]
-  before_action :set_service, only: [:action, :attack, :defence, :heal]
+  before_action :set_service, only: [:action, :attack, :defence]
   before_action :set_account, only: [:new]
   before_action :set_unit, only: [:challenge, :heal, :destroy]
+  before_action :set_service_with_unit, only: [:resurrection, :challenge, :heal]
 
   def challenge
     authorize! :step, @lobby
@@ -35,8 +36,8 @@ class UnitsController < ApplicationController
   def heal
     authorize! :step, @lobby
     authorize! :heal, @lobby
-    serv = UnitsActionsService.new(@current_account,@lobby , @unit)
-    serv.heal
+    #serv = UnitsActionsService.new(@current_account,@lobby , @unit)
+    @service.heal
     redirect_to lobby_units_path(@lobby.url)
   end
 
@@ -52,6 +53,12 @@ class UnitsController < ApplicationController
 
   def destroy
     @unit.destroy
+    redirect_to lobby_path(@lobby.url)
+  end
+
+  def resurrection
+    authorize! :resurrection, @lobby
+    @service.resurrection
     redirect_to lobby_path(@lobby.url)
   end
 
@@ -76,6 +83,10 @@ private
 
   def set_service
     @service = UnitsActionsService.new(find_current_account,@lobby,nil)
+  end
+
+  def set_service_with_unit
+    @service = UnitsActionsService.new(find_current_account,@lobby,set_unit)
   end
 
   def unit_params
