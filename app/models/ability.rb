@@ -36,6 +36,7 @@ class Ability
         units = Unit.my_units(current_account).all
         (units.size < lobby.game_mode) ? true : false
       end
+      can :update, Lobby, user_id: user.id
     end
 
     # The first argument to `can` is the action you are giving the user

@@ -31,6 +31,7 @@ class LobbiesController < ApplicationController
 
   # GET /lobbies/1/edit
   def edit
+    authorize! :update, @lobby
   end
 
   # POST /lobbies
@@ -44,6 +45,7 @@ class LobbiesController < ApplicationController
   # PATCH/PUT /lobbies/1
   # PATCH/PUT /lobbies/1.json
   def update
+    authorize! :update, @lobby
     @lobby.update(lobby_params)
     redirect_to lobby_path(@lobby.url), notice: 'Lobby was successfully updated.'
   end
@@ -51,6 +53,7 @@ class LobbiesController < ApplicationController
   # DELETE /lobbies/1
   # DELETE /lobbies/1.json
   def destroy
+    authorize! :update, @lobby
     @service.destroy
     redirect_to lobbies_url, notice: 'Lobby was successfully destroyed.'
   end

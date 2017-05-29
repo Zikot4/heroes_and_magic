@@ -38,8 +38,9 @@ div class="row"
               = "/" 
               = lobby.count_of_users
             td = link_to 'Show', lobby_path(lobby.url)
-            td = link_to 'Edit', edit_lobby_path(lobby.url)
-            td = link_to 'Destroy', lobby_path(lobby.url), data: { confirm: 'Are you sure?' }, method: :delete
+            -if can? :update, @lobby
+              td = link_to 'Edit', edit_lobby_path(lobby.url)
+              td = link_to 'Destroy', lobby_path(lobby.url), data: { confirm: 'Are you sure?' }, method: :delete
             
     br
 
