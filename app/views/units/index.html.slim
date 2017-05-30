@@ -22,7 +22,7 @@ div class="row"
     hr
     - @my_units.each do |unit|
       p
-        -if unit.dead && !(can? :resurrection, @lobby)
+        -if (unit.dead && !(can? :resurrection, @lobby)) || !(can? :step, @lobby) && (unit.dead)
           s
             = "account "
             = unit.account_id 
@@ -31,7 +31,7 @@ div class="row"
             = " "
             = unit.variety
           = " - Dead"
-        -if unit.dead && (can? :resurrection, @lobby)
+        -if unit.dead && (can? :resurrection, @lobby) && (can? :step, @lobby)
           s
             =link_to resurrection_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}
               = "account "

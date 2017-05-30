@@ -1,7 +1,7 @@
 class LobbiesController < ApplicationController
   before_action :set_lobby, only: [:show,:update,:destroy,
-                                  :join, :ready, :start,
-                                  :leave, :current_account]
+                                  :join, :ready, :start, :edit,
+                                  :leave, :current_account, :game_over]
 
   # GET /lobbies
   # GET /lobbies.json
@@ -86,6 +86,11 @@ class LobbiesController < ApplicationController
     redirect_to root_path
   end
 
+  def game_over
+    return redirect_to lobby_path(@lobby.url) unless @lobby.game_over
+    @units = Unit.my_alive_units(current_account).all
+    @history = @lobby.history
+  end
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_lobby

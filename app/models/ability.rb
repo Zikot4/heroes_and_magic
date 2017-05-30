@@ -4,40 +4,40 @@ class Ability
   def initialize(user)
     user ||= User.new # guest user (not logged in)
 
-    if user.admin
-      can :manage, :all
-    else
-      can :join, Lobby do |lobby|
-        user_account = Account.where(user_id: user.id).all
-        account = lobby.accounts.where(id: user_account).first
-        !account.nil?
-      end
-      can :step, Lobby do |lobby|
-        units_under_attack = Unit.units_under_attack(lobby.accounts).all
-        current_account = Account.current_account(lobby.accounts,user).first
-        (!units_under_attack.exists?) && (current_account.current_step)
-      end
-      can :heal,Lobby do |lobby|
-        current_account = Account.current_account(lobby.accounts,user).first
-        unit = Unit.current_units(current_account, lobby.lap).first
-        !(unit.nil?) ? Object.const_get(unit.variety)::HEAL[:able] : false
-      end
-      can :resurrection, Lobby do |lobby|
-        current_account = Account.current_account(lobby.accounts,user).first
-        unit = Unit.current_units(current_account, lobby.lap).first
-        if !(unit.nil?)
-          (unit.hp < 10) ? false : Object.const_get(unit.variety)::HEAL[:resurrectionable]
-        else
-          false
-        end
-      end
-      can :create, Lobby do |lobby|
-        current_account = Account.current_account(lobby.accounts,user).first
-        units = Unit.my_units(current_account).all
-        (units.size < lobby.game_mode) ? true : false
-      end
-      can :update, Lobby, user_id: user.id
+
+    can :admin, User, admin: true
+
+    can :join, Lobby do |lobby|
+      user_account = Account.where(user_id: user.id).all
+      account = lobby.accounts.where(id: user_account).first
+      !account.nil?
     end
+    can :step, Lobby do |lobby|
+      units_under_attack = Unit.units_under_attack(lobby.accounts).all
+      current_account = Account.current_account(lobby.accounts,user).first
+      (!units_under_attack.exists?) && (current_account.current_step)
+    end
+    can :heal,Lobby do |lobby|
+      current_account = Account.current_account(lobby.accounts,user).first
+      unit = Unit.current_units(current_account, lobby.lap).first
+      !(unit.nil?) ? Object.const_get(unit.variety)::HEAL[:able] : false
+    end
+    can :resurrection, Lobby do |lobby|
+      current_account = Account.current_account(lobby.accounts,user).first
+      unit = Unit.current_units(current_account, lobby.lap).first
+      if !(unit.nil?)
+        (unit.hp < 10) ? false : Object.const_get(unit.variety)::HEAL[:resurrectionable]
+      else
+        false
+      end
+    end
+    can :create, Lobby do |lobby|
+      current_account = Account.current_account(lobby.accounts,user).first
+      units = Unit.my_units(current_account).all
+      (units.size < lobby.game_mode) ? true : false
+    end
+    can :update, Lobby, user_id: user.id, everyone_is_ready: false
+
 
     # The first argument to `can` is the action you are giving the user
     # permission to do.

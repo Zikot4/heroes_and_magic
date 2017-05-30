@@ -1,20 +1,3 @@
-p Warrior have damage 9-14, resist to 
-p magic damage 50%
-p physical damage 50%
-br
-p Mage have damage 18-23, resist to 
-p magic damage 50%
-p physical damage 20%
-br
-p Priest have damage 9-14, heal 9-14(can resurrect)
-p When you want resurrect, you give 80% of your health, but when your health more than 9
-p resist to 
-p magic damage 60%
-p physical damage 20%
-br
-p Your target can't absorb damage if you hit with crit  
-p Chance to critical hit 25%
-p Change to miss  14%
 h1 Listing lobbies	
 div class="row"
   div class="col-sm-6 blog-main"
@@ -25,8 +8,7 @@ div class="row"
           th Count of users
           th Users
           th
-          th
-          th
+
 
       tbody
         - @lobbies.each do |lobby|
@@ -37,15 +19,18 @@ div class="row"
               = lobby.accounts.length
               = "/" 
               = lobby.count_of_users
-            td = link_to 'Show', lobby_path(lobby.url)
-            -if can? :update, @lobby
-              td = link_to 'Edit', edit_lobby_path(lobby.url)
-              td = link_to 'Destroy', lobby_path(lobby.url), data: { confirm: 'Are you sure?' }, method: :delete
+            td 
+              div class="btn-group" role="group" aria-label="..."
+                = link_to 'Show', lobby_path(lobby.url), class: "btn btn-default"
+                -if can? :update, lobby
+                  = link_to 'Edit', edit_lobby_path(lobby.url), class: "btn btn-default"
+                  = link_to 'Destroy', lobby_path(lobby.url), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-default"
             
     br
 
     = link_to 'New Lobby', new_lobby_path
-  div class="col-sm-3 blog-main"  
+  div class="col-sm-3 col-sm-offset-1 blog-sidebar scroll"
+    h4 Lobbies
     - @accounts.each do |account|
       li 
         = link_to account.lobby.url.to_s, lobby_path(account.lobby.url)

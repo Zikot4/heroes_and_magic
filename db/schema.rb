@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170529125736) do
+ActiveRecord::Schema.define(version: 20170530144217) do
 
   create_table "accounts", force: :cascade do |t|
     t.integer  "user_id"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20170529125736) do
     t.boolean  "everyone_is_ready", default: false
     t.integer  "lap",               default: 0
     t.boolean  "hidden",            default: false
+    t.boolean  "game_over",         default: false
   end
 
   create_table "units", force: :cascade do |t|

@@ -14,8 +14,10 @@ class UnitsController < ApplicationController
   end
 
   def index
-    return redirect_to lobby_action_path(@lobby.url) if Unit.where(account_id: @current_account.id).where.not(under_attack: nil).exists?
     serv = UnitsShowService.new(@lobby,@current_account,@lobby_accounts)
+    serv.game_over
+    return redirect_to game_over_lobby_path(@lobby.url) if @lobby.game_over
+    return redirect_to lobby_action_path(@lobby.url) if Unit.where(account_id: @current_account.id).where.not(under_attack: nil).exists?
     serv.next
     @current_unit, @my_units, @units = serv.select_units
     @history = History.find_by_lobby(@lobby.id).first
@@ -57,6 +59,7 @@ class UnitsController < ApplicationController
   end
 
   def resurrection
+    authorize! :step, @lobby
     authorize! :resurrection, @lobby
     @service.resurrection
     redirect_to lobby_path(@lobby.url)

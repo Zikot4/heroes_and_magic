@@ -9,7 +9,10 @@ module UnitsShowCase
   def select_units
     raise NotImplementedError
   end
-  
+
+  def game_over
+    raise NotImplementedError
+  end
   def success?
       errors.none?
   end

@@ -15,8 +15,18 @@ class UnitsShowService
   def select_units
     current_unit = Unit.current_units(current_account, lobby.lap).first
     my_units     = Unit.my_units(current_account)
-    units        = Unit.other_units(lobby.accounts, current_account)
+    units        = Unit.other_units_from_lobby(lobby.accounts, current_account)
     return [current_unit, my_units, units]
+  end
+
+  def game_over#TODO
+    units = Unit.alive_units_from_lobby(lobby.accounts).all
+    account_id = units[0].account_id
+    units.each do |unit|
+      return false if unit.account_id != account_id
+    end
+    lobby.game_over = true
+    lobby.save
   end
 private
   attr_reader :lobby, :lobby_accounts,:current_account

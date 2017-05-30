@@ -3,11 +3,16 @@ p#notice = notice
 p
   strong Url:
   = @lobby.url
+  div class="btn-group" role="group" aria-label="..."
+    -if can? :update, @lobby
+      = link_to 'Edit', edit_lobby_path(@lobby.url), class: "btn btn-default"
+      = link_to 'Destroy', lobby_path(@lobby.url), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-default"
 p 
   strong Game Mode:
   = @lobby.game_mode.to_s << "x" << @lobby.game_mode.to_s 
 -if can? :join, @lobby
   = link_to "Leave", leave_lobby_path(@lobby.url), data: {method: :delete}, class: "btn btn-warning"
+
 hr
 p
   strong Count of users:
