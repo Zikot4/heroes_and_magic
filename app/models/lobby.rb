@@ -1,7 +1,7 @@
 class Lobby < ApplicationRecord
   has_many :accounts, :counter_cache => true
   belongs_to :user
-  has_one :history, dependent: :destroy
+  has_many :histories, dependent: :destroy
 
   GAME_MODE = {
     :three  => 3,

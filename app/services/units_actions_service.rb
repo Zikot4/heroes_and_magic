@@ -30,7 +30,7 @@ class UnitsActionsService
     protection, attack = self.action
     damage = damage_calculation(attack)
     damage(attack, protection, damage)
-    unless protection.destroyed?
+    unless protection.dead
       damage = damage_calculation(protection)
       damage(protection, attack, damage)
     end
@@ -70,7 +70,7 @@ private
       unit.hp += hp
       unit.save
       who.save
-      HistoryActions.add(lobby,StringConsts.heal(who.id.to_s, unit.id.to_s, hp.to_s))
+      HistoryActions.create(lobby,StringConsts.heal(who.id.to_s, unit.id.to_s, hp.to_s))
     end
   end
 
@@ -79,7 +79,7 @@ private
     return whom.save if miss?(who.id.to_s)
     hp, absorb = critical_hit(hp, absorb)
     whom.hp -= hp
-    HistoryActions.add(lobby,StringConsts.damage(whom.id.to_s,hp.to_s, absorb.to_s))
+    HistoryActions.create(lobby,StringConsts.damage(whom.id.to_s,hp.to_s, absorb.to_s))
     make_dead(who, whom)
     whom.save
   end
@@ -117,7 +117,7 @@ private
       critical = r.rand(3..6)
       damage += absorb + critical
       absorb = 0
-      HistoryActions.add(lobby,StringConsts.critical_hit(critical.to_s))
+      HistoryActions.create(lobby,StringConsts.critical_hit(critical.to_s))
     end
     [damage, absorb]
   end
@@ -126,14 +126,14 @@ private
     if whom.hp <= 0
       whom.dead = true
       whom.save
-      HistoryActions.add(lobby,StringConsts.kill(who.id.to_s,whom.id.to_s))
+      HistoryActions.create(lobby,StringConsts.kill(who.id.to_s,whom.id.to_s))
     end
   end
 
   def miss?(who)
     r = Random.new
     if (r.rand(0..6)) == 0               # 1/7 miss
-      HistoryActions.add(lobby,StringConsts.miss(who))
+      HistoryActions.create(lobby,StringConsts.miss(who))
       return true
     end
   end
@@ -143,6 +143,6 @@ private
     unit.under_attack = current_unit.id
     unit.save
     current_unit.save
-    HistoryActions.add(lobby,StringConsts.challenge(current_unit.id.to_s,unit.id.to_s))
+    HistoryActions.create(lobby,StringConsts.challenge(current_unit.id.to_s,unit.id.to_s))
   end
 end

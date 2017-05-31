@@ -1,12 +1,9 @@
 module HistoryActions
+  action = "action"
 
-  def self.create(lobby)
-    lobby.create_history(actions: "~[Lobby was created]<br>")
+  def self.create(lobby, str)
+    body = "~[" + str + "]<br>"
+    h = lobby.histories.new(variety: "action", body: body, time: Time.new)
+    h.save
   end
-
-  def self.add(lobby,str)
-    lobby.history.actions << "~[" + str + "]<br>"
-    lobby.history.save
-  end
-
 end

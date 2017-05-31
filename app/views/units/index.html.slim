@@ -97,4 +97,5 @@ div class="row"
   div class="col-sm-3 col-sm-offset-1 blog-sidebar scroll"
     div class="sidebar-module"
       h4 Actions:
-      = raw @history.actions
+      -@histories.each do |history|
+        = raw history.body

@@ -20,7 +20,7 @@ class UnitsController < ApplicationController
     return redirect_to lobby_action_path(@lobby.url) if Unit.where(account_id: @current_account.id).where.not(under_attack: nil).exists?
     serv.next
     @current_unit, @my_units, @units = serv.select_units
-    @history = History.find_by_lobby(@lobby.id).first
+    @histories = History.find_by_lobby(@lobby.id).last(15)
   end
 
   def new

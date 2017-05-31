@@ -6,7 +6,7 @@ class LobbiesController < ApplicationController
   # GET /lobbies
   # GET /lobbies.json
   def index
-    @lobbies = Lobby.where(hidden: false).includes(:accounts).all
+    @lobbies = Lobby.where(hidden: false,everyone_is_ready: false).includes(:accounts).all
     @accounts = Account.where(user_id: current_user).includes(:lobby).all
   end
 
@@ -53,7 +53,7 @@ class LobbiesController < ApplicationController
   # DELETE /lobbies/1
   # DELETE /lobbies/1.json
   def destroy
-    authorize! :update, @lobby
+    authorize! :destroy, @lobby
     @service.destroy
     redirect_to lobbies_url, notice: 'Lobby was successfully destroyed.'
   end
@@ -89,7 +89,7 @@ class LobbiesController < ApplicationController
   def game_over
     return redirect_to lobby_path(@lobby.url) unless @lobby.game_over
     @units = Unit.my_alive_units(current_account).all
-    @history = @lobby.history
+    @histories = History.find_by_lobby(@lobby.id)
   end
   private
     # Use callbacks to share common setup or constraints between actions.

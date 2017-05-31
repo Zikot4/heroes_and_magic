@@ -24,6 +24,7 @@ div class="row"
                 = link_to 'Show', lobby_path(lobby.url), class: "btn btn-default"
                 -if can? :update, lobby
                   = link_to 'Edit', edit_lobby_path(lobby.url), class: "btn btn-default"
+                -if can? :destroy, lobby
                   = link_to 'Destroy', lobby_path(lobby.url), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-default"
             
     br

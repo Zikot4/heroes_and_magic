@@ -3,6 +3,10 @@ module StringConsts
     return who << " heal " << whom << " on " << hp << "hp"
   end
 
+  def self.create_lobby
+    return "Lobby was created"
+  end
+
   def self.challenge(who, whom)
     return "Challenge (" << who << "/" << whom << ")"
   end

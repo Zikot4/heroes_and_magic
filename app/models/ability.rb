@@ -37,6 +37,13 @@ class Ability
       (units.size < lobby.game_mode) ? true : false
     end
     can :update, Lobby, user_id: user.id, everyone_is_ready: false
+    can :destroy, Lobby do |lobby|
+      if (lobby.everyone_is_ready == false) && (lobby.user_id == user.id)
+        true
+      elsif lobby.everyone_is_ready && lobby.game_over
+        true
+      end
+    end
 
 
     # The first argument to `can` is the action you are giving the user

@@ -1,6 +1,9 @@
 h3 GAME OVER
+-if can? :destroy, @lobby
+  = link_to 'Destroy', lobby_path(@lobby.url), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-default"
 -if @units.exists?
   h3 YOU WIN!
 -else
   h3 YOU LOSE!
-= raw @history.actions
+- @histories.each do |history|
+  = raw history.body

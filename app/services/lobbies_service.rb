@@ -11,7 +11,7 @@ class LobbiesService
     @lobby = user.lobbies.new(params)
     GenerateUrl.generate_url(@lobby)
     @lobby.save
-    HistoryActions.create(@lobby)
+    HistoryActions.create(@lobby,StringConsts.create_lobby)
     self.join
     @lobby
   end
@@ -35,7 +35,7 @@ class LobbiesService
       account.save
       @lobby.everyone_is_ready = true
       @lobby.save
-      HistoryActions.add(@lobby,StringConsts.game_start)
+      HistoryActions.create(@lobby,StringConsts.game_start)
       return true
     end
   end
@@ -47,7 +47,7 @@ class LobbiesService
         account = user.accounts.new
         account.lobby_id = lobby.id
         account.save
-        HistoryActions.add(lobby,StringConsts.join_to_lobby(user.email))
+        HistoryActions.create(lobby,StringConsts.join_to_lobby(user.email))
       end
     end
   end
