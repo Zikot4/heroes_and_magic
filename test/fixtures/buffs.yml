@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  variety: MyString
+  unit_id: 1
+
+two:
+  name: MyString
+  variety: MyString
+  unit_id: 1

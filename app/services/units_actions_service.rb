@@ -10,14 +10,14 @@ class UnitsActionsService
   def heal
     current_unit = Unit.current_units(current_account,lobby.lap).first
     current_unit.lap += 1
-    health_points = heal_calculation(current_unit)
+    health_points = get_unit(current_unit).get_heal
     healing(current_unit, [unit], health_points)
   end
 
   def challenge
     current_unit = Unit.current_units(current_account,lobby.lap).first
     challenge!(current_unit)
-    defence if (get_range_value(current_unit) == true) && (get_range_value(unit) == false)
+    defence if (get_unit(current_unit).get_range_value == true) && (get_unit(unit).get_range_value == false)
   end
 
   def defence
@@ -28,10 +28,10 @@ class UnitsActionsService
 
   def attack
     protection, attack = self.action
-    damage = damage_calculation(attack)
+    damage = get_unit(attack).damage_calculation
     damage(attack, protection, damage)
     unless protection.dead
-      damage = damage_calculation(protection)
+      damage = get_unit(protection).damage_calculation
       damage(protection, attack, damage)
     end
   end
@@ -76,44 +76,36 @@ private
 
   def damage(who, whom, hp, absorb = 0)
     whom.under_attack = nil
+    hp += Buffs.damage_buff(who)
     return whom.save if miss?(who.id.to_s)
-    hp, absorb = critical_hit(hp, absorb)
+    hp, absorb = critical_hit(who, hp, absorb)
     whom.hp -= hp
     HistoryActions.create(lobby,StringConsts.damage(whom.id.to_s,hp.to_s, absorb.to_s))
     make_dead(who, whom)
     whom.save
   end
 
-  def damage_calculation(unit)
-    r = Random.new
-    return Object.const_get(unit.variety)::DAMAGE[:value] + r.rand(0..5)
-  end
-
-  def heal_calculation(unit)
-    r = Random.new
-    return Object.const_get(unit.variety)::HEAL[:value] + r.rand(0..5)
+  def get_unit(unit)
+    return Object.const_get(unit.variety)
   end
 
   def get_defence_value(who, whom)
-    type = Object.const_get(who.variety)::DAMAGE[:type]
-    return Object.const_get(whom.variety)::RESIST[type]
-  end
-
-  def get_range_value(unit)
-    return Object.const_get(unit.variety)::DAMAGE[:range]
+    damage_type = get_unit(who)::DAMAGE[:type]
+    return get_unit(whom).get_defence(damage_type)
   end
 
   def get_damage_absorb(who, whom = nil)
-    health_points = damage_calculation(who)
+    health_points = get_unit(who).damage_calculation
     return health_points if whom.nil?
     damage = (health_points * get_defence_value(who, whom)).round
     absorb = health_points - damage
     return [damage, absorb]
   end
 
-  def critical_hit(damage, absorb)
+  def critical_hit(who, damage, absorb)
     r = Random.new
-    if (r.rand(0..3)) == 0               # 1/4 critical hit
+    n = Buffs.critical_buff(who) || 3
+    if (r.rand(0..n)) == 0               # 1/4 critical hit
       critical = r.rand(3..6)
       damage += absorb + critical
       absorb = 0
@@ -132,7 +124,8 @@ private
 
   def miss?(who)
     r = Random.new
-    if (r.rand(0..6)) == 0               # 1/7 miss
+    n = Buffs.miss_buff(who) || 6
+    if (r.rand(0..n)) == 0               # 1/7 miss
       HistoryActions.create(lobby,StringConsts.miss(who))
       return true
     end

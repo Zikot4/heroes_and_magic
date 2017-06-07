@@ -3,7 +3,9 @@ Rails.application.routes.draw do
 
   get :info, to: 'informations#index'
 
+
   resources :lobbies, param: :url do
+    resources :buffs
     resources :units do
       put :challenge,    on: :member, controller: 'units'
       put :heal,         on: :member, controller: 'units'

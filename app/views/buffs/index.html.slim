@@ -1,0 +1,19 @@
+= "Current unit"
+= @current_unit.id 
+= " "
+= @current_unit.variety
+= " "
+
+- @my_units.each do |unit|
+  p
+    = "id "
+    = unit.id
+    = " "
+    = unit.variety
+    = " "
+    = unit.hp
+    - unit.buffs.each do |buff|
+      = " [" << buff.name << "]"
+== render 'create_buff'
+
+= link_to "Back", lobby_units_path(@lobby.url), class: "btn btn-default"

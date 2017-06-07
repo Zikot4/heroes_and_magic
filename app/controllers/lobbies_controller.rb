@@ -1,4 +1,5 @@
 class LobbiesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_lobby, only: [:show,:update,:destroy,
                                   :join, :ready, :start, :edit,
                                   :leave, :current_account, :game_over]

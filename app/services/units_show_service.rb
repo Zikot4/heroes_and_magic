@@ -14,7 +14,7 @@ class UnitsShowService
 
   def select_units
     current_unit = Unit.current_units(current_account, lobby.lap).first
-    my_units     = Unit.my_units(current_account)
+    my_units     = Unit.my_units_includes_buffs(current_account)
     units        = Unit.other_units_from_lobby(lobby.accounts, current_account)
     return [current_unit, my_units, units]
   end
