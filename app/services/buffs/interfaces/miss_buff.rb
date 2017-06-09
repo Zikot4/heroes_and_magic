@@ -1,6 +1,6 @@
 module MissBuff
   BUFF = {
-    :variety => "miss",
+    :variety => :miss,
     :name    => "MissBuff",
     :percent  => 0
   }

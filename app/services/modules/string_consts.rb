@@ -39,4 +39,16 @@ module StringConsts
   def self.miss(who)
     return "Unit(" << who << ") Missed!"
   end
+
+  def self.get_buff(user, buff)
+    return "Unit[" << user << "] got buff [" << buff << "]"
+  end
+
+  def self.get_heal(user, value)
+    return "Unit[" << user << "] was healed [ +" << value << "]"
+  end
+
+  def self.resurrect(who,whom)
+    return "unit[" << whom << "] was resurrected by unit[" << who << "]"
+  end
 end

@@ -2,7 +2,7 @@ class ArcaneMagicBuff
   include DamageBuff
 
   BUFF = {
-    :variety => "damage",
+    :variety => :damage,
     :name    => "ArcaneMagicBuff",
     :damage_type  => :magic,
     :value   => 10

@@ -2,7 +2,7 @@ module ShiningForceBuff
   include DamageBuff
 
   BUFF = {
-    :variety => "damage",
+    :variety => :damage,
     :name    => "ShiningForceBuff",
     :damage_type  => :all,
     :value   => 10

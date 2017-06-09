@@ -2,7 +2,7 @@ module PhysicalPowerBuff
   include DamageBuff
 
   BUFF = {
-    :variety => "damage",
+    :variety => :damage,
     :name    => "PhysicalPowerBuff",
     :damage_type  => :physical,
     :value   => 10
@@ -11,5 +11,5 @@ module PhysicalPowerBuff
   def self.get_buff
     [BUFF[:damage_type],BUFF[:value]]
   end
-  
+
 end

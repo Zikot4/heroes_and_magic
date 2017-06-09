@@ -1,6 +1,6 @@
 module DamageBuff
   BUFF = {
-    :variety => "damage",
+    :variety => :damage,
     :name    => "DamageBuff",
     :damage_type  => :all,
     :value   => 5

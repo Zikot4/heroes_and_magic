@@ -2,17 +2,32 @@ pre
   | Warrior have damage 9-14, resist to
     magic damage 50%
     physical damage 50%
+    buffs:
+      [Physical Power - damage type  => physical, +10]
 
     Mage have damage 18-23, resist to
     magic damage 50%
     physical damage 20%
-
+    buffs:
+      [Arcane Magic   - damage type  => magic, +10]
+      [Unstable Magic - critical hit  => 100%]
+    
     Priest have damage 9-14, heal 9-14(can resurrect)
     When you want resurrect, you give 80% of your health, but when your health more than 9
     resist to
     magic damage 60%
     physical damage 20%
+    buffs:
+      [Careful Aim   - miss => 2%] (default => 14%)
+      [Shining Force - damage type => all, +10]
 
     Your target can't absorb damage if you hit with crit
     Chance to critical hit 25%
     Change to miss 14%
+    
+    Random actions(each even lap):
+      "Focused Aim Buff"       - miss => 6.25%
+      "Elemental Mastery Buff" - damage type => all, +15
+      "Contagion Buff"         - damage type => magic, +5
+      "Divine Hammer Buff"     - damage type => physical, +5
+      "heal"                   - heal on 10 hp   

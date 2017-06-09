@@ -1,6 +1,8 @@
 class UnitsActionsService
   include UnitsActionsCase
 
+  $r = Random.new
+
   def initialize(current_account,lobby,unit)
     @current_account = current_account
     @lobby = lobby
@@ -52,6 +54,7 @@ class UnitsActionsService
     unit.lap = lobby.lap + 1
     unit.save
     current_unit.save
+    HistoryActions.create(lobby, StringConsts.resurrect(current_unit.id.to_s, unit.id.to_s))
   end
 
 private
@@ -68,6 +71,7 @@ private
   def healing(who, whom, hp)
     whom.each do |unit|
       unit.hp += hp
+      unit.hp = Object.const_get(unit.variety)::INFO[:hp] if unit.hp > Object.const_get(unit.variety)::INFO[:hp]
       unit.save
       who.save
       HistoryActions.create(lobby,StringConsts.heal(who.id.to_s, unit.id.to_s, hp.to_s))
@@ -103,10 +107,9 @@ private
   end
 
   def critical_hit(who, damage, absorb)
-    r = Random.new
     n = Buffs.critical_buff(who) || 3
-    if (r.rand(0..n)) == 0               # 1/4 critical hit
-      critical = r.rand(3..6)
+    if ($r.rand(0..n)) == 0               # 1/4 critical hit
+      critical = $r.rand(3..6)
       damage += absorb + critical
       absorb = 0
       HistoryActions.create(lobby,StringConsts.critical_hit(critical.to_s))
@@ -123,9 +126,8 @@ private
   end
 
   def miss?(who)
-    r = Random.new
     n = Buffs.miss_buff(who) || 6
-    if (r.rand(0..n)) == 0               # 1/7 miss
+    if ($r.rand(0..n)) == 0               # 1/7 miss
       HistoryActions.create(lobby,StringConsts.miss(who))
       return true
     end

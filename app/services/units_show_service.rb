@@ -36,6 +36,7 @@ private
     unless lap.exists?
       lobby.lap += 1
       lobby.save
+      RandomActions.action(lobby) if lobby.lap % 2 == 0
       account = Account.accounts_with_step_true(lobby_accounts).first
       account.current_step = false
       account.save

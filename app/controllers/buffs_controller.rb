@@ -10,10 +10,8 @@ class BuffsController < ApplicationController
   end
 
   def new
-    buff = Buff.new(buff_params)
-    buff.variety = Object.const_get(buff.name)::BUFF[:variety]
-    buff.save
-    next_step
+    serv = BuffsService.new(@lobby, @current_unit, buff_params)
+    serv.create
     redirect_to lobby_units_path(@lobby.url)
   end
 
@@ -25,11 +23,6 @@ private
 
   def find_current_unit
     @current_unit = Unit.current_units(@current_account, @lobby.lap).first
-  end
-
-  def next_step
-    @current_unit.lap += 1
-    @current_unit.save
   end
 
   def set_lobby
