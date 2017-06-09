@@ -18,7 +18,8 @@ div class="row"
           = " "
           = @current_unit.variety
           = " hp: "
-          = @current_unit.hp
+          = @current_unit.hp.to_s << "/"
+          = Object.const_get(@current_unit.variety)::INFO[:hp]
           - @current_unit.buffs.each do |buf|
             = " [" << buf.name << "]"
       br
@@ -60,7 +61,8 @@ div class="row"
               = " "
               = unit.variety
               = " hp: "
-              = unit.hp
+              = unit.hp.to_s << "/"
+              = Object.const_get(unit.variety)::INFO[:hp]
               - unit.buffs.each do |buf|
                 = " [" << buf.name << "]"
           -if (((can? :step, @lobby) && !(can? :heal, @lobby)) || (!can? :step, @lobby)) && !unit.dead
@@ -72,7 +74,8 @@ div class="row"
               = " "
               = unit.variety
               = " hp: "
-              = unit.hp
+              = unit.hp.to_s << "/"
+              = Object.const_get(unit.variety)::INFO[:hp]
               - unit.buffs.each do |buf|
                 = " [" << buf.name << "]"
     hr
@@ -97,7 +100,8 @@ div class="row"
               = " "
               = unit.variety 
               = " "
-              = unit.hp
+              = unit.hp.to_s << "/"
+              = Object.const_get(unit.variety)::INFO[:hp]
               - unit.buffs.each do |buf|
                 = " [" << buf.name << "]"
           -else
@@ -108,7 +112,8 @@ div class="row"
             = " "
             = unit.variety 
             = " hp: "
-            = unit.hp
+            = unit.hp.to_s << "/"
+            = Object.const_get(unit.variety)::INFO[:hp]
             - unit.buffs.each do |buf|
               = " [" << buf.name << "]"
   div class="col-sm-3 col-sm-offset-1 blog-sidebar scroll"

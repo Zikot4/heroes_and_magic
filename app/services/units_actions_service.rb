@@ -80,6 +80,8 @@ private
 
   def damage(who, whom, hp, absorb = 0)
     whom.under_attack = nil
+    who.lap += 1
+    who.save
     hp += Buffs.damage_buff(who)
     return whom.save if miss?(who.id.to_s)
     hp, absorb = critical_hit(who, hp, absorb)
@@ -134,7 +136,6 @@ private
   end
 
   def challenge!(current_unit)
-    current_unit.lap += 1
     unit.under_attack = current_unit.id
     unit.save
     current_unit.save

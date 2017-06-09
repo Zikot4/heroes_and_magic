@@ -6,7 +6,8 @@ h3 class="alliance"
   = " "
   = @protection.variety
   = " hp: "
-  = @protection.hp
+  = @protection.hp.to_s << "/"
+  = Object.const_get(@protection.variety)::INFO[:hp]
   - @protection.buffs.each do |buff|
     = " [" << buff.name << "]"
 p
@@ -19,7 +20,8 @@ p class = "enemy"
   = " "
   = @attack.variety
   = " hp: " 
-  = @attack.hp
+  = @attack.hp.to_s << "/"
+  = Object.const_get(@attack.variety)::INFO[:hp]
   - @attack.buffs.each do |buff|
     = " [" << buff.name << "]"
 
