@@ -8,7 +8,7 @@
 
   .field
     = f.label :count_of_users
-    = f.number_field :count_of_users
+    = f.select :count_of_users, Lobby::COUNT_OF_USERS
   .field
     = f.label :game_mode
     = f.select :game_mode, Lobby::GAME_MODE

@@ -38,7 +38,6 @@ class UnitsController < ApplicationController
   def heal
     authorize! :step, @lobby
     authorize! :heal, @lobby
-    #serv = UnitsActionsService.new(@current_account,@lobby , @unit)
     @service.heal
     redirect_to lobby_units_path(@lobby.url)
   end

@@ -14,7 +14,6 @@ class LobbiesController < ApplicationController
   # GET /lobbies/1
   # GET /lobbies/1.json
   def show
-    return redirect_to root_path if @lobby.nil?
     if @lobby.everyone_is_ready
       redirect_to lobby_units_path(@lobby.url)
     else
@@ -96,6 +95,7 @@ class LobbiesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_lobby
       @lobby = Lobby.find_by(url: params[:url])
+      return redirect_to root_path if @lobby.nil?
       @service = LobbiesService.new(@lobby,current_user,nil)
     end
 

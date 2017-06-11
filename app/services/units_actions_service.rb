@@ -12,6 +12,7 @@ class UnitsActionsService
   def heal
     current_unit = Unit.current_units(current_account,lobby.lap).first
     current_unit.lap += 1
+    current_unit.save
     health_points = get_unit(current_unit).get_heal
     healing(current_unit, [unit], health_points)
   end
@@ -24,12 +25,16 @@ class UnitsActionsService
 
   def defence
     protection, attack = self.action
+    attack.lap += 1
+    attack.save
     damage, absorb = get_damage_absorb(attack, protection)
     damage(attack, protection, damage, absorb)
   end
 
   def attack
     protection, attack = self.action
+    attack.lap += 1
+    attack.save
     damage = get_unit(attack).damage_calculation
     damage(attack, protection, damage)
     unless protection.dead
@@ -70,18 +75,13 @@ private
 
   def healing(who, whom, hp)
     whom.each do |unit|
-      unit.hp += hp
-      unit.hp = Object.const_get(unit.variety)::INFO[:hp] if unit.hp > Object.const_get(unit.variety)::INFO[:hp]
-      unit.save
-      who.save
+      Mhealing.healing(unit, hp)
       HistoryActions.create(lobby,StringConsts.heal(who.id.to_s, unit.id.to_s, hp.to_s))
     end
   end
 
   def damage(who, whom, hp, absorb = 0)
     whom.under_attack = nil
-    who.lap += 1
-    who.save
     hp += Buffs.damage_buff(who)
     return whom.save if miss?(who.id.to_s)
     hp, absorb = critical_hit(who, hp, absorb)

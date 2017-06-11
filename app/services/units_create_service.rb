@@ -7,9 +7,8 @@ class UnitsCreateService
   end
 
   def create
-    unit = account.units.create(params)
-    unit.hp = Object.const_get(unit.variety)::INFO[:hp]
-    unit.save
+    params[:hp] = Object.const_get(params[:variety])::INFO[:hp]
+    account.units.create(params)
   end
 
 private

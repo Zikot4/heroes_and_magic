@@ -9,9 +9,8 @@ class BuffsService
 
   def create
     return false if Buff.find_by(params)
-    buff = Buff.new(params)
-    buff.variety = Object.const_get(buff.name)::BUFF[:variety]
-    buff.save
+    params[:variety] = Object.const_get(params[:name])::BUFF[:variety]
+    buff = Buff.create(params)
     next_step
     HistoryActions.create(lobby,StringConsts.get_buff(unit.id.to_s, buff.name))
   end

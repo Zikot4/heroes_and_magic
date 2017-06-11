@@ -30,9 +30,7 @@ private
   def self.heal(lobby, units)
     points = 10
     unit = units[$r.rand(0..units.length-1)]
-    unit.hp += points
-    unit.hp = Object.const_get(unit.variety)::INFO[:hp] if unit.hp > Object.const_get(unit.variety)::INFO[:hp]
-    unit.save
+    Mhealing.healing(unit, points)
     HistoryActions.create(lobby,StringConsts.get_heal(unit.id.to_s, points.to_s))
   end
 end

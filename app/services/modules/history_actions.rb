@@ -3,7 +3,6 @@ module HistoryActions
 
   def self.create(lobby, str)
     body = "~[" + str + "]<br>"
-    h = lobby.histories.new(variety: "action", body: body, time: Time.new)
-    h.save
+    lobby.histories.create(variety: "action", body: body, time: Time.new)
   end
 end

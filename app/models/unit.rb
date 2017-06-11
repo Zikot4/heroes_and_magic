@@ -1,4 +1,6 @@
 class Unit < ApplicationRecord
+  validates  :variety, :hp, presence: true
+
   belongs_to :account
   has_many :buffs, dependent: :destroy
   CLASSES = {
