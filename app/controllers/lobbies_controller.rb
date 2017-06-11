@@ -7,8 +7,8 @@ class LobbiesController < ApplicationController
   # GET /lobbies
   # GET /lobbies.json
   def index
-    @lobbies = Lobby.where(hidden: false,everyone_is_ready: false).includes(:accounts).all
-    @accounts = Account.where(user_id: current_user).includes(:lobby).all
+    @lobbies = Lobby.find_visible_lobbies.all
+    @accounts = Account.find_all_user_lobby(current_user).all
   end
 
   # GET /lobbies/1

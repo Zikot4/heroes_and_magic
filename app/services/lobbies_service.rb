@@ -8,11 +8,10 @@ class LobbiesService
   end
 
   def create
-    @lobby = user.lobbies.new(params)
-    GenerateUrl.generate_url(@lobby)
-    @lobby.save
-    HistoryActions.create(@lobby,StringConsts.create_lobby)
+    params[:url] = GenerateUrl.generate_url
+    @lobby = user.lobbies.create!(params)
     self.join
+    HistoryActions.create(@lobby,StringConsts.create_lobby)
     @lobby
   end
 

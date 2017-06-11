@@ -19,8 +19,12 @@ class UnitsShowService
     return [current_unit, my_units, units]
   end
 
-  def game_over#TODO
+  def game_over
     units = Unit.alive_units_from_lobby(lobby.accounts).all
+    unless units.exists?
+      lobby.game_over = true
+      return lobby.save
+    end
     account_id = units[0].account_id
     units.each do |unit|
       return false if unit.account_id != account_id

@@ -15,4 +15,6 @@ class Lobby < ApplicationRecord
     :three => 3,
     :four  => 4
   }
+
+  scope :find_visible_lobbies, lambda { where(hidden: false,everyone_is_ready: false).includes(:accounts)}
 end

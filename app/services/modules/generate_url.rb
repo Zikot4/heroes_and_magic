@@ -1,9 +1,10 @@
 module GenerateUrl
   ALPHABET = ('a'..'z').to_a + ('A'..'Z').to_a
   N = 2
-  def self.generate_url(lobby)
-    lobby.url = create_url
-    lobby.url = create_url while Lobby.find_by(url: lobby.url)
+  def self.generate_url
+    url = create_url
+    url = create_url while Lobby.find_by(url: url)
+    return url
   end
 
   def self.create_url
