@@ -48,4 +48,53 @@ describe LobbiesController, :type => :controller do
       expect(Lobby.all).to eq([lobby])
     end
   end
+
+  describe "PUT #ready" do
+    it "should be changed status: true of false" do
+      params = { :count_of_users => 4, :game_mode => 3, :hidden => false, :url => nil}
+      user1 = User.create!(email: "1@examp", password: "123456")
+      serv = LobbiesService.new(nil,user1,params)
+      lobby = serv.create
+      serv = LobbiesService.new(lobby, user1, nil)
+      serv.ready      #true now
+      serv.ready      #false now
+      account = Account.current_account(lobby.accounts,user1).first
+
+      (account.user_ready).should == false
+    end
+  end
+
+  describe "PUT #start" do
+    it "should run the game" do
+      params = { :count_of_users => 2, :game_mode => 2, :hidden => false, :url => nil}
+      user1 = User.create!(email: "1@examp", password: "123456")
+      user2 = User.create!(email: "2@examp", password: "123456")
+      serv = LobbiesService.new(nil,user1,params)
+      lobby = serv.create
+      serv = LobbiesService.new(lobby,user1,nil)
+      serv.ready
+      serv = LobbiesService.new(lobby,user2,nil)
+      serv.join
+      serv.ready
+      serv.start?
+
+      (lobby.everyone_is_ready).should == true # IT SHOULD WORK !!!!
+    end
+  end
+
+  describe "DELETE #leave" do
+    it "should leave from lobby and switch user_id" do
+      params = { :count_of_users => 2, :game_mode => 2, :hidden => false, :url => "q1q1"}
+      user1 = User.create!(email: "1@examp", password: "123456")
+      user2 = User.create!(email: "2@examp", password: "123456")
+      serv = LobbiesService.new(nil,user2,params)
+      lobby = serv.create
+      serv = LobbiesService.new(lobby,user1, nil)
+      serv.join
+      serv = LobbiesService.new(lobby, user2, nil)
+      serv.leave
+
+      (lobby.user_id).should == user1.id
+    end
+  end
 end

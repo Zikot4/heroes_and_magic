@@ -24,17 +24,17 @@ class LobbiesService
 
   #return true if all right
   def start?
-    if lobby.accounts.length == @lobby.count_of_users
-      accounts = Account.accounts_from_lobby(@lobby.accounts)
+    if lobby.accounts.length == lobby.count_of_users
+      accounts = Account.accounts_from_lobby(lobby.accounts)
       accounts.each do |account|
         return false if account.user_ready == false
       end
-      account = Account.current_account(accounts,@lobby.user_id).first
+      account = Account.current_account(accounts,lobby.user_id).first
       account.current_step = true
       account.save
-      @lobby.everyone_is_ready = true
-      @lobby.save
-      HistoryActions.create(@lobby,StringConsts.game_start)
+      lobby.everyone_is_ready = true
+      lobby.save
+      HistoryActions.create(lobby,StringConsts.game_start)
       return true
     end
   end
@@ -47,6 +47,7 @@ class LobbiesService
         account.lobby_id = lobby.id
         account.save
         HistoryActions.create(lobby,StringConsts.join_to_lobby(user.email))
+        return account
       end
     end
   end

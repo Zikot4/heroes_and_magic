@@ -80,7 +80,8 @@ class LobbiesController < ApplicationController
       redirect_to lobby_path(@lobby.url)
     end
   end
-
+  
+  #DELETE /lobbies/:url/leave
   def leave
     @service.leave
     redirect_to root_path
