@@ -7,13 +7,13 @@ require "./app/services/modules/generate_url.rb"
 describe LobbiesController, :type => :controller do
   describe "GET #index" do
     it "responds successfully with an HTTP 200 status code" do
-      { :get => "/" }.should route_to(:controller => "lobbies", :action => "index")
+      expect({ :get => "/" }).to route_to(:controller => "lobbies", :action => "index")
     end
 
     it "loads all visible of the lobbies into @lobbies" do
       lobby1  = Lobby.create!(url: "1",hidden: false)
       lobby2  = Lobby.create!(url: "2",hidden: true)
-      { :get => "/" }.should route_to(:controller => "lobbies", :action => "index")
+      expect({ :get => "/" }).to route_to(:controller => "lobbies", :action => "index")
 
       lobbies = Lobby.find_visible_lobbies.all
       expect(lobbies).to match_array([lobby1])
@@ -36,7 +36,7 @@ describe LobbiesController, :type => :controller do
   describe "POST #create" do
 
     it "responds successfully with an HTTP 200 status code" do
-      { :post => "/lobbies" }.should route_to(:controller => "lobbies", :action => "create")
+      expect({ :post => "/lobbies" }).to route_to(:controller => "lobbies", :action => "create")
     end
 
     it "should create new lobby and join" do
@@ -60,7 +60,7 @@ describe LobbiesController, :type => :controller do
       serv.ready      #false now
       account = Account.current_account(lobby.accounts,user1).first
 
-      (account.user_ready).should == false
+      expect(account.user_ready) == false
     end
   end
 
@@ -78,7 +78,7 @@ describe LobbiesController, :type => :controller do
       serv.ready
       serv.start?
 
-      (lobby.everyone_is_ready).should == true # IT SHOULD WORK !!!!
+      expect(lobby.everyone_is_ready) == true # IT SHOULD WORK !!!!
     end
   end
 
@@ -94,7 +94,7 @@ describe LobbiesController, :type => :controller do
       serv = LobbiesService.new(lobby, user2, nil)
       serv.leave
 
-      (lobby.user_id).should == user1.id
+      expect(lobby.user_id) == user1.id
     end
   end
 end

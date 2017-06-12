@@ -32,8 +32,8 @@ class LobbiesService
       account = Account.current_account(accounts,lobby.user_id).first
       account.current_step = true
       account.save
-      lobby.everyone_is_ready = true
-      lobby.save
+      #lobby.everyone_is_ready = true
+      lobby.update(everyone_is_ready: true)
       HistoryActions.create(lobby,StringConsts.game_start)
       return true
     end
@@ -43,7 +43,7 @@ class LobbiesService
     if lobby.accounts.length < lobby.count_of_users
       lobby_accounts = lobby.accounts
       unless Account.current_account(lobby_accounts, user).exists?
-        account = user.accounts.new
+        account = user.accounts.create!
         account.lobby_id = lobby.id
         account.save
         HistoryActions.create(lobby,StringConsts.join_to_lobby(user.email))
