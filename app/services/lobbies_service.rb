@@ -30,9 +30,7 @@ class LobbiesService
         return false if account.user_ready == false
       end
       account = Account.current_account(accounts,lobby.user_id).first
-      account.current_step = true
-      account.save
-      #lobby.everyone_is_ready = true
+      account.update(current_step: true)
       lobby.update(everyone_is_ready: true)
       HistoryActions.create(lobby,StringConsts.game_start)
       return true

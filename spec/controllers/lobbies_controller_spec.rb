@@ -3,6 +3,7 @@ require "./app/services/lobbies_service"
 require "./app/services/modules/history_actions"
 require "./app/services/modules/string_consts.rb"
 require "./app/services/modules/generate_url.rb"
+require "./app/services/units_show_service"
 
 describe LobbiesController, :type => :controller do
   describe "GET #index" do
@@ -60,7 +61,7 @@ describe LobbiesController, :type => :controller do
       serv.ready      #false now
       account = Account.current_account(lobby.accounts,user1).first
 
-      expect(account.user_ready) == false
+      expect(account.user_ready).to eq false
     end
   end
 
@@ -73,12 +74,14 @@ describe LobbiesController, :type => :controller do
       lobby = serv.create
       serv = LobbiesService.new(lobby,user1,nil)
       serv.ready
+      l = Lobby.last
       serv = LobbiesService.new(lobby,user2,nil)
       serv.join
       serv.ready
+      serv = LobbiesService.new(l,user2,nil)
       serv.start?
 
-      expect(lobby.everyone_is_ready) == true # IT SHOULD WORK !!!!
+      expect(l.everyone_is_ready).to eq true
     end
   end
 
@@ -91,10 +94,33 @@ describe LobbiesController, :type => :controller do
       lobby = serv.create
       serv = LobbiesService.new(lobby,user1, nil)
       serv.join
-      serv = LobbiesService.new(lobby, user2, nil)
+      l = Lobby.last
+      serv = LobbiesService.new(l, user2, nil)
       serv.leave
 
-      expect(lobby.user_id) == user1.id
+      expect(l.user_id).to eq user1.id
+    end
+  end
+
+  describe "GET #game_over" do
+    it "should game over eq true" do
+      params = { :count_of_users => 2, :game_mode => 2, :hidden => false, :url => nil}
+      user1 = User.create!(email: "1@examp", password: "123456")
+      user2 = User.create!(email: "2@examp", password: "123456")
+      serv = LobbiesService.new(nil,user1,params)
+      lobby = serv.create
+      serv = LobbiesService.new(lobby,user1,nil)
+      serv.ready
+      serv = LobbiesService.new(lobby,user2,nil)
+      serv.join
+      serv.ready
+      serv = LobbiesService.new(lobby,user1,nil)
+      serv.start?
+      current_account = Account.current_account(lobby.accounts,user1).first
+      serv = UnitsShowService.new(lobby,current_account)
+      serv.game_over
+
+      expect(lobby.game_over).to eq true
     end
   end
 end

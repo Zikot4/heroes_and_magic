@@ -14,7 +14,7 @@ class UnitsController < ApplicationController
   end
 
   def index
-    serv = UnitsShowService.new(@lobby,@current_account,@lobby_accounts)
+    serv = UnitsShowService.new(@lobby,@current_account)
     serv.game_over
     return redirect_to game_over_lobby_path(@lobby.url) if @lobby.game_over
     return redirect_to lobby_action_path(@lobby.url) if Unit.where(account_id: @current_account.id).where.not(under_attack: nil).exists?
@@ -80,8 +80,7 @@ private
   end
 
   def find_current_account
-    @lobby_accounts = @lobby.accounts
-    @current_account = Account.current_account(@lobby_accounts,current_user).first
+    @current_account = Account.current_account(@lobby.accounts,current_user).first
   end
 
   def set_service

@@ -80,13 +80,14 @@ class LobbiesController < ApplicationController
       redirect_to lobby_path(@lobby.url)
     end
   end
-  
+
   #DELETE /lobbies/:url/leave
   def leave
     @service.leave
     redirect_to root_path
   end
 
+  #GET /lobbies/:url/game_over
   def game_over
     return redirect_to lobby_path(@lobby.url) unless @lobby.game_over
     @units = Unit.my_alive_units(current_account).all
