@@ -6,6 +6,7 @@ class UnitsController < ApplicationController
   before_action :set_unit, only: [:challenge, :heal, :destroy]
   before_action :set_service_with_unit, only: [:resurrection, :challenge, :heal]
 
+  #PUT /lobbies/:lobby_url/units/:id/challenge
   def challenge
     authorize! :step, @lobby
     service = UnitsActionsService.new(@current_account,@lobby , @unit)
@@ -13,6 +14,7 @@ class UnitsController < ApplicationController
     redirect_to lobby_units_path(@lobby.url)
   end
 
+  #GET /lobbies/:lobby_url/units
   def index
     serv = UnitsShowService.new(@lobby,@current_account)
     serv.game_over
@@ -30,11 +32,13 @@ class UnitsController < ApplicationController
     redirect_to lobby_path(@lobby.url)
   end
 
+  #GET /lobbies/:lobby_url/action
   def action
     redirect_to lobby_path(@lobby.url) unless Unit.current_account_under_attack(@current_account.id).exists?
     @protection, @attack = @service.action
   end
 
+  #PUT /lobbies/:lobby_url/units/:id/heal
   def heal
     authorize! :step, @lobby
     authorize! :heal, @lobby
@@ -42,21 +46,25 @@ class UnitsController < ApplicationController
     redirect_to lobby_units_path(@lobby.url)
   end
 
+  #PUT /lobbies/:lobby_url/attack
   def attack
     @service.attack
     redirect_to lobby_path(@lobby.url)
   end
 
+  #PUT /lobbies/:lobby_url/defence
   def defence
     @service.defence
     redirect_to lobby_path(@lobby.url)
   end
 
+  #DELETE /lobbies/:lobby_url/units/:id
   def destroy
     @unit.destroy
     redirect_to lobby_path(@lobby.url)
   end
 
+  #PUT /lobbies/:lobby_url/units/:id/resurrection
   def resurrection
     authorize! :step, @lobby
     authorize! :resurrection, @lobby

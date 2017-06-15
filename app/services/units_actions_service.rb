@@ -121,8 +121,8 @@ private
 
   def make_dead(who, whom)
     if whom.hp <= 0
-      whom.dead = true
-      whom.save
+      whom.update(dead: true)
+      (whom.buffs).destroy_all
       HistoryActions.create(lobby,StringConsts.kill(who.id.to_s,whom.id.to_s))
     end
   end

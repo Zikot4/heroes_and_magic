@@ -1,9 +1,4 @@
 require "rails_helper"
-require "./app/services/lobbies_service"
-require "./app/services/modules/history_actions"
-require "./app/services/modules/string_consts.rb"
-require "./app/services/modules/generate_url.rb"
-require "./app/services/units_show_service"
 
 describe LobbiesController, :type => :controller do
   describe "GET #index" do
@@ -12,8 +7,8 @@ describe LobbiesController, :type => :controller do
     end
 
     it "loads all visible of the lobbies into @lobbies" do
-      lobby1  = Lobby.create!(url: "1",hidden: false)
-      lobby2  = Lobby.create!(url: "2",hidden: true)
+      lobby1  = create(:lobby, hidden: false)
+      lobby2  = create(:lobby, hidden: true)
       expect({ :get => "/" }).to route_to(:controller => "lobbies", :action => "index")
 
       lobbies = Lobby.find_visible_lobbies.all
@@ -21,12 +16,11 @@ describe LobbiesController, :type => :controller do
     end
 
     it "should find all current user lobby" do
-      user1, user2 = User.create!(email: "1@examp", password: "123456"), User.create!(email: "2@examp", password: "123456")
-      lobby1, lobby2 = user1.lobbies.create(url: "url1", count_of_users: 3), user1.lobbies.create(url: "url2", count_of_users: 3)
-      serv1, serv2  = LobbiesService.new(lobby1, user1, nil), LobbiesService.new(lobby2, user1, nil)
+      lobby1, lobby2 = create(:lobby), create(:lobby)
+      serv1, serv2  = LobbiesService.new(lobby1, User.first, nil), LobbiesService.new(lobby2, User.first, nil)
       serv1.join
       serv2.join
-      accounts = Account.find_all_user_lobby(user1).all
+      accounts = Account.find_all_user_lobby(User.first).all
       l = []
       accounts.each { |a| l << Lobby.where(id: a.lobby_id).first}
 
@@ -41,10 +35,10 @@ describe LobbiesController, :type => :controller do
     end
 
     it "should create new lobby and join" do
-      params = { :count_of_users => 5, :game_mode => 3, :hidden => false, :url => nil}
-      user1 = User.create!(email: "4@examp", password: "123456")
-      serv = LobbiesService.new(nil,user1,params)
-      lobby = serv.create
+      lobby = create(:lobby)
+      user1 = User.first
+      serv = LobbiesService.new(lobby,user1,nil)
+      serv.join
 
       expect(Lobby.all).to eq([lobby])
     end
@@ -52,11 +46,10 @@ describe LobbiesController, :type => :controller do
 
   describe "PUT #ready" do
     it "should be changed status: true of false" do
-      params = { :count_of_users => 4, :game_mode => 3, :hidden => false, :url => nil}
-      user1 = User.create!(email: "1@examp", password: "123456")
-      serv = LobbiesService.new(nil,user1,params)
-      lobby = serv.create
-      serv = LobbiesService.new(lobby, user1, nil)
+      lobby = create(:lobby)
+      user1 = User.first
+      serv = LobbiesService.new(lobby,user1,nil)
+      serv.join
       serv.ready      #true now
       serv.ready      #false now
       account = Account.current_account(lobby.accounts,user1).first
@@ -67,60 +60,59 @@ describe LobbiesController, :type => :controller do
 
   describe "PUT #start" do
     it "should run the game" do
-      params = { :count_of_users => 2, :game_mode => 2, :hidden => false, :url => nil}
-      user1 = User.create!(email: "1@examp", password: "123456")
-      user2 = User.create!(email: "2@examp", password: "123456")
-      serv = LobbiesService.new(nil,user1,params)
-      lobby = serv.create
-      serv = LobbiesService.new(lobby,user1,nil)
-      serv.ready
-      l = Lobby.last
-      serv = LobbiesService.new(lobby,user2,nil)
+      lobby = create(:lobby)
+      user1 = User.first
+      user2 = create(:user)
+      serv = LobbiesService.new(lobby,User.first,nil)
       serv.join
       serv.ready
-      serv = LobbiesService.new(l,user2,nil)
+
+      serv = LobbiesService.new(Lobby.last,User.last,nil)
+      serv.join
+      serv.ready
+      serv = LobbiesService.new(Lobby.last,User.last,nil)
       serv.start?
 
-      expect(l.everyone_is_ready).to eq true
+      expect(Lobby.last.everyone_is_ready).to eq true
     end
   end
 
   describe "DELETE #leave" do
     it "should leave from lobby and switch user_id" do
-      params = { :count_of_users => 2, :game_mode => 2, :hidden => false, :url => "q1q1"}
-      user1 = User.create!(email: "1@examp", password: "123456")
-      user2 = User.create!(email: "2@examp", password: "123456")
-      serv = LobbiesService.new(nil,user2,params)
-      lobby = serv.create
-      serv = LobbiesService.new(lobby,user1, nil)
+      lobby = create(:lobby)
+      user1 = User.first
+      user2 = create(:user)
+      serv = LobbiesService.new(lobby,User.first,nil)
       serv.join
-      l = Lobby.last
-      serv = LobbiesService.new(l, user2, nil)
+
+      serv = LobbiesService.new(lobby,user2, nil)
+      serv.join
+      serv = LobbiesService.new(Lobby.last, user1, nil)
       serv.leave
 
-      expect(l.user_id).to eq user1.id
+      expect((Lobby.last).user_id).to eq user2.id
     end
   end
 
   describe "GET #game_over" do
     it "should game over eq true" do
-      params = { :count_of_users => 2, :game_mode => 2, :hidden => false, :url => nil}
-      user1 = User.create!(email: "1@examp", password: "123456")
-      user2 = User.create!(email: "2@examp", password: "123456")
-      serv = LobbiesService.new(nil,user1,params)
-      lobby = serv.create
-      serv = LobbiesService.new(lobby,user1,nil)
-      serv.ready
-      serv = LobbiesService.new(lobby,user2,nil)
+      lobby = create(:lobby)
+      user1 = User.first
+      user2 = create(:user)
+      serv = LobbiesService.new(lobby,User.first,nil)
       serv.join
       serv.ready
-      serv = LobbiesService.new(lobby,user1,nil)
+      serv = LobbiesService.new(lobby,User.last,nil)
+      serv.join
+      serv.ready
+
+      serv = LobbiesService.new(Lobby.last, user2,nil)
       serv.start?
       current_account = Account.current_account(lobby.accounts,user1).first
-      serv = UnitsShowService.new(lobby,current_account)
+      serv = UnitsShowService.new(Lobby.last,current_account)
       serv.game_over
 
-      expect(lobby.game_over).to eq true
+      expect(Lobby.last.game_over).to eq true
     end
   end
 end
