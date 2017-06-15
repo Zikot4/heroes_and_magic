@@ -1,4 +1,6 @@
 class Unit < ApplicationRecord
+  after_update :remove_buffs, if: :dead?
+
   validates  :variety, :hp, presence: true
 
   belongs_to :account
@@ -19,4 +21,13 @@ class Unit < ApplicationRecord
   scope :my_alive_units,               lambda {|current_account| where(account_id: current_account, dead: false).includes(:buffs)}
   scope :other_units_from_lobby,       lambda {|lobby_accounts, current_account|where(account_id: lobby_accounts).where.not(account_id:  current_account).includes(:buffs)}
   scope :alive_units_from_lobby,       lambda {|lobby_accounts| where(account_id: lobby_accounts, dead: false)}
+  
+private
+  def dead?
+     return self.dead ? true : false
+  end
+
+  def remove_buffs
+    (self.buffs).destroy_all
+  end
 end

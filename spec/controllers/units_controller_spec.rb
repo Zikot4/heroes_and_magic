@@ -12,7 +12,7 @@ describe UnitsController, :type => :controller do
       serv.join
       history = History.find_by_lobby(lobby.id).first(15)
 
-      expect((history.last).body).to eq "~[13@examp join in the lobby]<br>"
+      expect((history.last).body).to eq (History.last).body
     end
   end
 
@@ -22,7 +22,7 @@ describe UnitsController, :type => :controller do
       serv = LobbiesService.new(lobby,User.first,nil)
       serv.join
       ac = Account.last
-      unit = create(:unit, account_id: ac.id)
+      unit = create(:unit)
 
       expect(unit).to eq Unit.last
     end
@@ -43,9 +43,9 @@ describe UnitsController, :type => :controller do
       serv = LobbiesService.new(lobby,user1,nil)
 
       ac1 = Account.first
-      unit1 = create(:unit,account_id: ac1.id)
+      unit1 = create(:unit, account_id: ac1.id)
       ac2 = Account.last
-      unit2 = create(:unit,account_id: ac2.id)
+      unit2 = create(:unit, account_id: ac2.id)
 
       l = Lobby.last
       serv = LobbiesService.new(l,user2,nil)
@@ -102,7 +102,7 @@ describe UnitsController, :type => :controller do
       serv = LobbiesService.new(lobby,user1,nil)
 
       ac1 = Account.first
-      unit1 = create(:unit,account_id: ac1.id, variety: "Priest")
+      unit1 = create(:unit, :priest, account_id: ac1.id)
       ac2 = Account.last
       unit2 = create(:unit,account_id: ac2.id)
 
@@ -192,8 +192,8 @@ describe UnitsController, :type => :controller do
       serv = LobbiesService.new(lobby,user1,nil)
 
       ac1 = Account.first
-      unit1 = create(:unit,account_id: ac1.id, variety: "Priest")
-      unit2 = create(:unit,account_id: ac1.id, dead: true)
+      unit1 = create(:unit, :priest, account_id: ac1.id, )
+      unit2 = create(:unit, :dead, account_id: ac1.id)
       ac2 = Account.last
       unit3 = create(:unit,account_id: ac2.id)
 

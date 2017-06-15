@@ -3,6 +3,7 @@ class BuffsController < ApplicationController
   before_action :find_current_account, only: [:index, :new, :find_current_unit]
   before_action :find_current_unit, only: [:index, :new]
 
+  #GET /lobbies/:lobby_url/buffs
   def index
     authorize! :step, @lobby
     return redirect_to lobby_path(@lobby.url) if @current_unit.nil?

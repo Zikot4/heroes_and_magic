@@ -1,7 +1,14 @@
 FactoryGirl.define do
   factory :unit do
-    account_id 1      #You must write hash Account here) "create(:unit, account_id: Account.last)"
+    account_id (:account)
     variety "Mage"
     hp 50
+
+    trait :priest do
+      variety "Priest"
+    end
+    trait :dead do
+      dead true
+    end
   end
 end
