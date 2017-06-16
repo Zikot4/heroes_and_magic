@@ -17,7 +17,7 @@ class Ability
       current_account = Account.current_account(lobby.accounts,user).first
       (!units_under_attack.exists?) && (current_account.current_step)
     end
-    can :heal,Lobby do |lobby|
+    can :heal, Lobby do |lobby|
       current_account = Account.current_account(lobby.accounts,user).first
       unit = Unit.current_units(current_account, lobby.lap).first
       !(unit.nil?) ? Object.const_get(unit.variety)::HEAL[:able] : false
@@ -33,7 +33,7 @@ class Ability
     end
     can :create, Lobby do |lobby|
       current_account = Account.current_account(lobby.accounts,user).first
-      units = Unit.my_units(current_account).all
+      units = current_account.units.all
       (units.size < lobby.game_mode) ? true : false
     end
     can :update, Lobby, user_id: user.id, everyone_is_ready: false
@@ -44,8 +44,18 @@ class Ability
         true
       end
     end
-
-
+    can :allied, Unit do |unit|
+      account = Account.accounts(unit.account_id).first
+      lobby   = Lobby.find_by_id(account.lobby_id).first
+      current_account = Account.current_account(lobby.accounts, user).first
+      current_account.team == account.team
+    end
+    can :opponent, Unit do |unit|
+      account = Account.accounts(unit.account_id).first
+      lobby   = Lobby.find_by_id(account.lobby_id).first
+      current_account = Account.current_account(lobby.accounts, user).first
+      current_account.team != account.team
+    end
     # The first argument to `can` is the action you are giving the user
     # permission to do.
     # If you pass :manage it will apply to every action. Other common actions

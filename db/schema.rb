@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170606133432) do
+ActiveRecord::Schema.define(version: 20170616160002) do
 
   create_table "accounts", force: :cascade do |t|
     t.integer  "user_id"
@@ -19,6 +19,9 @@ ActiveRecord::Schema.define(version: 20170606133432) do
     t.datetime "updated_at",                   null: false
     t.boolean  "current_step", default: false
     t.integer  "lobby_id"
+    t.integer  "team",         default: 1
+    t.integer  "lap",          default: 0
+    t.boolean  "defeat",       default: false
   end
 
   create_table "buffs", force: :cascade do |t|

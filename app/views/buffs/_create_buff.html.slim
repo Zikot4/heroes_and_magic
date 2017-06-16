@@ -1,7 +1,7 @@
 = form_for Buff.new, url: new_lobby_buff_path(@lobby.url), method: "get" do |f|
 
   .field
-    = f.select :unit_id, @my_units.ids,{}, { class: "form-control"}
+    = f.select :unit_id, @current_account.units.ids,{}, { class: "form-control"}
 
   .field
     = f.select :name, Object.const_get(@current_unit.variety)::BUFFS,{}, { class: "form-control"}    

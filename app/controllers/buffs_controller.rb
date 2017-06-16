@@ -7,7 +7,7 @@ class BuffsController < ApplicationController
   def index
     authorize! :step, @lobby
     return redirect_to lobby_path(@lobby.url) if @current_unit.nil?
-    @my_units = Unit.my_alive_units(@current_account)
+    @account_includes_buffs = Account.account_includes_buffs(@lobby.accounts, current_user).first
   end
 
   def new

@@ -24,7 +24,7 @@ describe BuffsController, :type => :controller do
       serv = LobbiesService.new(Lobby.last,user2,nil)
       serv.start?
 
-      units = Unit.my_alive_units(ac1)
+      units = Unit.find_alive_units(ac1)
       expect(units.length).to eq 1
     end
   end

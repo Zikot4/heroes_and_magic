@@ -2,7 +2,8 @@ class LobbiesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_lobby, only: [:show,:update,:destroy,
                                   :join, :ready, :start, :edit,
-                                  :leave, :current_account, :game_over]
+                                  :leave, :current_account, :game_over,
+                                  :change_team ]
 
   # GET /lobbies
   # GET /lobbies.json
@@ -20,7 +21,6 @@ class LobbiesController < ApplicationController
       @users = User.users(@lobby.accounts).all
       @users_ready = Account.accounts_ready(@lobby.accounts).all
       @current_account = Account.current_account(@lobby.accounts,current_user.id).first
-      @units = Unit.my_units(current_account)
     end
   end
 
@@ -90,10 +90,20 @@ class LobbiesController < ApplicationController
   #GET /lobbies/:url/game_over
   def game_over
     return redirect_to lobby_path(@lobby.url) unless @lobby.game_over
-    @units = Unit.my_alive_units(current_account).all
+    accounts = Account.find_accounts_from_team(@lobby.accounts, current_account.team)
+    @result = nil
+    accounts.each { |account| @result ||= !(account.defeat)}
     @histories = History.find_by_lobby(@lobby.id)
   end
-  private
+
+  #PUT /lobbies/:url/change_team
+  def change_team
+    current_account.update(params.require(:account).permit(:team))
+    redirect_to lobby_path(@lobby.url)
+  end
+
+private
+
     # Use callbacks to share common setup or constraints between actions.
     def set_lobby
       @lobby = Lobby.find_by(url: params[:url])

@@ -30,12 +30,18 @@ div class="row"
       h3
         = "Wait for your turn"
     hr
-    - @my_units.each do |unit|
+    - @account_includes_buffs.units.each do |unit|
       p
         -if (unit.dead && !(can? :resurrection, @lobby)) || !(can? :step, @lobby) && (unit.dead)
           s
-            = "account "
-            = unit.account_id 
+            b
+              = "account "
+            i
+              = unit.account_id 
+            b
+              = " team "
+            i
+              = @current_account.team
             = " | "
             = unit.id
             = " "
@@ -54,8 +60,14 @@ div class="row"
         -else
           -if (can? :step, @lobby) && (can? :heal, @lobby) && !(unit.dead)
             =link_to heal_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}, class: :heal
-              = "account "
-              = unit.account_id 
+              b
+                = "account "
+              i
+                = unit.account_id 
+              b
+                = " team "
+              i
+                = @current_account.team
               = " | "
               = unit.id
               = " "
@@ -67,8 +79,14 @@ div class="row"
                 = " [" << buf.name << "]"
           -if (((can? :step, @lobby) && !(can? :heal, @lobby)) || (!can? :step, @lobby)) && !unit.dead
             div class="alliance"
-              = "account "
-              = unit.account_id 
+              b
+                = "account "
+              i
+                = unit.account_id 
+              b
+                = " team "
+              i
+                = @current_account.team
               = " | "
               = unit.id
               = " "
@@ -79,43 +97,62 @@ div class="row"
               - unit.buffs.each do |buf|
                 = " [" << buf.name << "]"
     hr
-    - @units.each do |unit|
-      p
-        -if unit.dead
-          s
-            = "account "
-            = unit.account_id 
-            = " | "
-            = unit.id
-            = " "
-            = unit.variety
-          = " - Dead"
-        -else
-          -if can? :step, @lobby
-            =link_to challenge_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}, class: :enemy
-              = "account "
-              = unit.account_id 
+    - @other_accounts.each do |account|
+      - account.units.each do |unit|
+        p
+          -if unit.dead
+            s
+              b
+                = "account "
+              i
+                = unit.account_id 
+              b
+                = " team "
+              i
+                = account.team
+              = " | "
+              = unit.id
+              = " "
+              = unit.variety
+            = " - Dead"
+          -else
+            -if (can? :step, @lobby) && (can? :opponent, unit)
+              =link_to challenge_lobby_unit_path(@lobby.url,unit.id),data: {method: :put}, class: :enemy
+                b
+                  = "account "
+                i
+                  = unit.account_id 
+                b
+                  = " team "
+                i
+                  = account.team
+                = " | "
+                = unit.id
+                = " "
+                = unit.variety 
+                = " "
+                = unit.hp.to_s << "/"
+                = Object.const_get(unit.variety)::INFO[:hp]
+                - unit.buffs.each do |buf|
+                  = " [" << buf.name << "]"
+            -else
+              b
+                = "account "
+              i
+                = unit.account_id 
+              b
+                = " team "
+              i
+                = account.team
               = " | "
               = unit.id
               = " "
               = unit.variety 
-              = " "
+              = " hp: "
               = unit.hp.to_s << "/"
               = Object.const_get(unit.variety)::INFO[:hp]
               - unit.buffs.each do |buf|
                 = " [" << buf.name << "]"
-          -else
-            = "account "
-            = unit.account_id 
-            = " | "
-            = unit.id
-            = " "
-            = unit.variety 
-            = " hp: "
-            = unit.hp.to_s << "/"
-            = Object.const_get(unit.variety)::INFO[:hp]
-            - unit.buffs.each do |buf|
-              = " [" << buf.name << "]"
   div class="col-sm-3 col-sm-offset-1 blog-sidebar scroll"
     div class="sidebar-module"
       h4 Actions:

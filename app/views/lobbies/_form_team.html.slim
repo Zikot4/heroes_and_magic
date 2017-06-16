@@ -1,0 +1,7 @@
+= form_for [lobby , account] , url: change_team_lobby_path(lobby.url), method: "put" do |f|
+  .field
+    = f.label :team
+  .field
+    = f.select :team, Account::TEAM, {}, { class: "form-control"}
+
+    .actions = f.submit class: "btn btn-default"

@@ -15,11 +15,12 @@ Rails.application.routes.draw do
     put :defence, controller: 'units'
     put :attack, controller: 'units'
 
-    get    :game_over, on: :member
-    post   :join,      on: :member
-    put    :ready,     on: :member
-    put    :start,     on: :member
-    delete :leave,     on: :member
+    get    :game_over,   on: :member
+    post   :join,        on: :member
+    put    :ready,       on: :member
+    put    :start,       on: :member
+    delete :leave,       on: :member
+    put    :change_team, on: :member
   end
 
   devise_for :users

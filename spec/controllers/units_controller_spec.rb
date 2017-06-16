@@ -14,6 +14,75 @@ describe UnitsController, :type => :controller do
 
       expect((history.last).body).to eq (History.last).body
     end
+
+    it "should make lap" do
+      lobby = create(:lobby, count_of_users: 4)
+      user1 = User.first
+      user2 = create(:user)
+      user3 = create(:user)
+      user4 = create(:user)
+
+      serv = LobbiesService.new(lobby,user1,nil)
+      serv.join
+      serv.ready
+      serv = LobbiesService.new(lobby,user2,nil)
+      serv.join
+      serv.ready
+      serv = LobbiesService.new(lobby,user3,nil)
+      serv.join
+      serv.ready
+      serv = LobbiesService.new(lobby,user4,nil)
+      serv.join
+      serv.ready
+      serv = LobbiesService.new(lobby,user1,nil)
+
+      ac1 = Account.first
+      ac1.update(team: 1)
+      unit1 = create(:unit, :priest, account_id: ac1.id)
+
+      ac2 = Account.second
+      ac2.update(team: 1)
+      unit2 = create(:unit, :priest, account_id: ac2.id)
+
+      ac3 = Account.third
+      ac3.update(team: 2)
+      unit3 = create(:unit, :priest, account_id: ac3.id)
+
+      ac4 = Account.last
+      ac4.update(team: 2)
+      unit4 = create(:unit, :priest, account_id: ac4.id)
+
+      serv = LobbiesService.new(Lobby.last,user2,nil)
+      serv.start?
+
+      serv_for_u1 = UnitsActionsService.new(Account.first, Lobby.last, Unit.first)
+      serv_for_u1.heal if (Account.first).current_step
+
+      serv = UnitsShowService.new(Lobby.last, nil)
+      serv.next
+
+
+      serv_for_u3 = UnitsActionsService.new(Account.third, Lobby.last, Unit.third)
+      serv_for_u3.heal if (Account.third).current_step
+
+      serv = UnitsShowService.new(Lobby.last, nil)
+      serv.next
+
+      serv_for_u2 = UnitsActionsService.new(Account.second, Lobby.last, Unit.second)
+      serv_for_u2.heal if (Account.second).current_step
+
+      serv = UnitsShowService.new(Lobby.last, nil)
+      serv.next
+
+      serv_for_u4 = UnitsActionsService.new(Account.last, Lobby.last, Unit.last)
+      serv_for_u4.heal if (Account.last).current_step
+
+      serv = UnitsShowService.new(Lobby.last, nil)
+      serv.next
+
+      expect((Lobby.last).lap    ).to eq 1
+
+    end
   end
 
   describe "GET #new" do

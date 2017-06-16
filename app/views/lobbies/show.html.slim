@@ -24,6 +24,10 @@ p
       = "User: "
       = user.email
       = " "
+      b
+        = "team: "
+      - acc = Account.current_account(@lobby.accounts, user).first
+      = acc.team
 p
   = "ready: "
   =@users_ready.length
@@ -33,15 +37,17 @@ p
   =link_to "Join", join_lobby_path(@lobby.url), data: { method: :post}, class: "btn btn-primary"
 -if can? :join, @lobby
   hr
+    =render partial: "lobbies/form_team", locals: {lobby: @lobby, account: @current_account}
+  hr
   -if @current_account.user_ready
     =link_to "Ready", ready_lobby_path(@lobby.url), data: { method: :put }, class: "btn btn-success"
   -else  
     =link_to "Ready", ready_lobby_path(@lobby.url), data: { method: :put }, class: "btn btn-danger"
   -if can? :create, @lobby
     hr
-    = render partial: "lobbies/form_test", locals: {lobby: @lobby}
+    = render partial: "lobbies/form_classes", locals: {lobby: @lobby}
   br
-  - @units.each do |unit|
+  - @current_account.units.each do |unit|
     li
       = unit.variety
       = "  "

@@ -9,6 +9,7 @@ class UnitsController < ApplicationController
   #PUT /lobbies/:lobby_url/units/:id/challenge
   def challenge
     authorize! :step, @lobby
+    authorize! :opponent, @unit
     service = UnitsActionsService.new(@current_account,@lobby , @unit)
     service.challenge
     redirect_to lobby_units_path(@lobby.url)
@@ -21,7 +22,8 @@ class UnitsController < ApplicationController
     return redirect_to game_over_lobby_path(@lobby.url) if @lobby.game_over
     return redirect_to lobby_action_path(@lobby.url) if Unit.where(account_id: @current_account.id).where.not(under_attack: nil).exists?
     serv.next
-    @current_unit, @my_units, @units = serv.select_units
+    @current_unit, @other_accounts = serv.select_units_accounts
+    @account_includes_buffs = Account.account_includes_buffs(@lobby.accounts, current_user).first
     @histories = History.find_by_lobby(@lobby.id).first(15)
   end
 
