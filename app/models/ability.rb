@@ -52,7 +52,7 @@ class Ability
     end
     can :opponent, Unit do |unit|
       account = Account.accounts(unit.account_id).first
-      lobby   = Lobby.find_by_id(account.lobby_id).first
+      lobby   = Lobby.find(account.lobby_id)
       current_account = Account.current_account(lobby.accounts, user).first
       current_account.team != account.team
     end
