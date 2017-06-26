@@ -1,7 +1,7 @@
 class UnitsActionsService
   include UnitsActionsCase
 
-  $r = Random.new
+  @@r = Random.new
 
   def initialize(current_account,lobby,unit)
     @current_account = current_account
@@ -110,8 +110,8 @@ private
 
   def critical_hit(who, damage, absorb)
     n = Buffs.critical_buff(who) || 3
-    if ($r.rand(0..n)) == 0               # 1/4 critical hit
-      critical = $r.rand(3..6)
+    if (@@r.rand(0..n)) == 0               # 1/4 critical hit
+      critical = @@r.rand(3..6)
       damage += absorb + critical
       absorb = 0
       HistoryActions.create(lobby,StringConsts.critical_hit(critical.to_s))
@@ -128,7 +128,7 @@ private
 
   def miss?(who)
     n = Buffs.miss_buff(who) || 6
-    if ($r.rand(0..n)) == 0               # 1/7 miss
+    if (@@r.rand(0..n)) == 0               # 1/7 miss
       HistoryActions.create(lobby,StringConsts.miss(who))
       return true
     end

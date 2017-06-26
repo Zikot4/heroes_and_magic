@@ -6,27 +6,33 @@ class Mage
   include BuffsForMage
 
   INFO = {
-    :hp    => 50,
-    :type  => "Mage"
+    hp:     50,
+    type: "Mage"
   }
   HEAL = {
-    :able  => false,
-    :resurrectionable   => false
+    able:             false,
+    resurrectionable: false
   }
   DAMAGE = {
-    :range  => true,
-    :type   => :magic,
-    :value  => 18
+    range: true,
+    type:  :magic,
+    value: 18
   }
   RESIST = {
-    :magic    => 0.5,
-    :physical => 0.8
+    magic:    0.5,
+    physical: 0.8
   }
 
+  def initialize
+    damage
+  end
+
+  @m = Mage.new
 
   def self.damage_calculation
     r = Random.new
     return DAMAGE[:value] + r.rand(0..5)
+    #return @m.first
   end
 
   def self.get_defence(type)
